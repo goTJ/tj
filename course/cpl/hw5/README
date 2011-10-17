@@ -1,0 +1,28 @@
+This compiler can detect those errors:
+	- Structural errors
+		* It's Empty
+		* Expect PROGRAM [program_name]
+		* Expect VAR
+		* Expect ENDVAR
+		* Expect BEGIN
+		* Expect END
+		* Expect PROCEDURE [program_name]
+		* Expect ';'
+		* Expect ','
+		* Expect VAR before ENDVAR
+		* Illegal syntax at the end
+		* Illegal syntax in declartion
+		* Illegal syntax: no procedure body
+		* Illegal syntax: VAR must occurs at block head
+		* Illegal syntax: variable declaration must occurs between VAR and ENDVAR
+		* Illegal syntax
+	- Symbol errors
+		* Mismatched data type
+		* Undefined procedure or wrong parameters
+		* Invalid ID names
+		* Reserved ID names
+		* Invalid constant
+		* Duplicatedly declared procedures
+		* Duplicatedly declared variables
+		* Using undeclared variables
+		* Using invalid ID names

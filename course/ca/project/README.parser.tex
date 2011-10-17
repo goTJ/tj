@@ -1,0 +1,101 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{BRF Simulator}
+\author{b92902084 張凱崴 \and b92902085 謝卓叡 \and b92902106 莊典融}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+% {{{ \begin{abstract}
+\begin{abstract}
+我們基本功能寫完了，還寫了"Syntex error detection"、"Pseudo instruction"、\\
+"Syntex error correction"、"Separated data/text segments" 這四個bonus。
+\end{abstract} % }}}
+% {{{ \section*{語法}
+\section*{語法}
+\begin{enumerate}
+\item 首先針對BRF的語法做一些簡述：
+	\begin{itemize}
+	\item .data跟.text可以任意交錯。
+	\item instruction的參數可以用空白或者是逗號分隔。
+	\item 每行中, \#以後的部分為註解, 在parse時將被忽略。
+	\item BRF提供了良好的文法錯誤判別機制，方便使用者快速找到問題所在。
+	\end{itemize}
+
+\item Register：\\
+	BRF提供兩種register寫法，一種是以register編號來指定，如：\$1,\$0，%
+	也可使用register的名稱來指定，如\$zero,\$t0。實作上是以建立一張表單作register名字之對照。
+
+\item Instruction Set：\\
+	BRF可以處理的instruction set共有add, addi, addiu, addu, and, andi, beq, bne, j, jal,
+	jr, lbu, lhu, lui, lw, nor, or, ori, slt, slti, sltiu, sltu, sll, srl, sb, sh, sw,
+	sub, subu等，以事先建表的方式將這些指令的處理方法建立，%
+	並且可以有效且簡易的刪減或修改instruction set。除此之外，BRF亦提供虛擬碼指令，%
+	以及相近錯誤更正，其建表的規則如下:
+	\begin{enumerate}
+	\item 輸入格式:\\
+		輸入格式是讀入指令時，一個指令名稱後會接的參數種類，目前使用的共有
+		rrr, rr, rri, r, ri, i, rm等七種，rrr 指指令後會接三個register當作參數，%
+		像add等指令便如此類，而i指的是常數，向addi便是rri型別。%
+		其中比較特別的為r m類別，此類別是專門處理lw系列的指令，%
+		由於lw指令給與參數的方式迥異，所以特別處理，會將%
+		lw \$t1 3(\$t2)拆成 r= \$t1 m = 3 \$t2,並將m拆成兩個參數來處理。
+	\item 指令集:\\
+		指令集建表模式是每個指令用兩個以上欄位來表示，第一個欄位表示此指令的輸入格式，%
+		表示法如上項所列。第二個欄位以後是指此指令將由哪些機器碼組成，%
+		欄位依照 R-type, I-type, J-type 項目各有不同，以add而言，%
+		將以 [0,'\$2'.'\$3','\$1',0,0x20] 建表，%
+		其中'\$2'的意思為放入第二個參數所代表的值，%
+		而建表的標準參考課本最後一頁所列的mips Reference Data。
+	\item 虛擬碼\\
+		虛擬碼可能由一個或一個以上的原始指令所構成，其建表方式同於一般指令，%
+		若有兩個以上的指令，則按照順序列於其後，目前所擁有的虛擬指令有mov，%
+		可以將某個register的值移動到另一個，另外有movi，可將某個常數移入register中。%
+	\item 相近碼錯誤更正\\
+		當輸入的 instruction 用法上有錯誤時，BRF會先試著做錯誤更正的動作，%
+		其原理是建一 "相近碼 table"，以add而言, 將以 ('addi') 建表，%
+		每當有語法錯誤時，BRF會從table對應的指令中嘗試找到合法的指令取代原本的，%
+		然後輸出一個warning，提醒使用者，若其中沒有合適的指令，BRF將會傳回error並結束。
+	\end{enumerate}
+\end{enumerate} % }}}
+% {{{ \section*{Object File Format}
+\section*{Object File Format}
+格式為binary file。 內容依序為：
+\begin{itemize}
+\item 4 bytes：存text segment的長度，單位bytes。
+\item 4 bytes：存data segment的長度，單位bytes。
+\item text segment, 每一instruction用4 bytes來表示。
+\item data segment。
+\end{itemize}
+% }}}
+% {{{ \section*{分工}
+\section*{分工}
+\begin{itemize}
+\item Design and Analyse：張凱崴、謝卓叡、莊典融
+\item Program：莊典融
+\item Build Table：張凱崴
+\item Test：謝卓叡
+\item Documentation：張凱崴、莊典融
+\end{itemize} % }}}
+\end{CJK} % }}}
+\end{document}

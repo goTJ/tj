@@ -1,0 +1,138 @@
+% vim:fileencodings=big5:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{bsmi}
+\title{Web Mining Final Project Report\\
+Taiwan Image – An Analysis of Travel Articles}
+\author{R96922011 莊典融 R96922012 廖瑋星 R96922125 沈思廷 }
+\end{CJK}
+\date{\today} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{bsmi}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+\begin{CJK}{Bg5}{bsmi}
+\begin{abstract} % {{{
+我們利用大量 blog 的文章，針對”旅遊”這主題，利用統計的方法找出各景點所擁有的特色。
+\end{abstract} % }}}
+\section{Introduction} % {{{
+\subsection*{Motivation}
+當提到一個景點時，人們總是會立刻聯想到一些事物，可能是這個地方的名勝古蹟、可能是這個地方的名產、或者是這個地方的美食，這就是這個地方的特色，也是大家對這個地方最深刻的印象。
+
+於是我們就決定，利用大量的遊記文章，來找出每個景點之特色，讓大家能更容易了解每個地方的特色到底為何，甚至找出一些可能大多數人並不這麼直覺想到的特色，對台灣這個地方有更多的了解，這就是我們的「台灣印象」。
+\subsection*{Problem Definition}
+我們所要解決的問題，是在特定主題（旅遊）下，找出此主題下各項目（景點）的 keyword。
+我們嘗試將目標設為三部分：
+\begin{enumerate}
+\item 搜集特定主題下各項目的 data set，試著找出各項目的 keyword。
+\item 嘗試建構搜尋系統，即時抓取搜尋的新景點資料並利用 data set 找出此景點的特色。我們有想到兩種 approach：
+	\begin{enumerate}
+	\item 試著利用原先的 data set，找出此特定主題的 general keyword list。利用 general keyword list 濾掉多餘的 keyword。
+	\item 藉由原先的 data set 跟新的 data，想辦法找出 keyword。
+	\end{enumerate}
+\end{enumerate}
+\subsection*{Issues}
+\subsubsection*{Data Collection}
+我們必須要有針對各個景點的大量旅遊文章，不但資料要跟旅遊相關，總資料量要多，各景點的資料也要多，資料的收集並不容易。
+而我們的解決方法是利用 blog 的搜尋系統，尋找”＜景點＞＋遊”和”＜景點＞＋旅”的 blog 文章。
+為了確保文章真的是旅遊相關的，我們只取文章標題有＜景點＞、”遊”、”旅”等字眼的文章。
+並將同一作者的文章視為同一篇。
+為了保證同一個景點的文章數夠多，我們只取文章數超過一定量的景點。
+
+\subsubsection*{Noise Keyword}
+處理這類問題，最常遇到的議題是會有 noise keyword。
+所謂 noise keyword 就是不應該是 keyword 的字因為統計特性跟 keyword 很像而成為 keyword。
+通常產生 noise keyword 的原因有兩類：一是 data set 不夠大，造成一些常用字成為 keyword；再者是 semantic meaning 不符合，例如”快樂”不是景點特色，即使大家去那個景點都很”快樂”。
+關於第一點，對於這個問題我們並沒有很好的想法，我們還是覺得根本問題是要有產生足夠好的 data set。
+另外我們額外將一些含有常見字的 keyword 濾掉，以改善效果。
+關於第二點，我們覺得雖然那些字不是特色，但還是表達了一些景點的相關特性，留也無妨。
+% }}}
+\section{Related Work} % {{{
+1. Shimohata, S., Sugio, T., Nagata, J. (1997). Retrieving collocations by co-occurrences and word order constraints. Proceedings of the 35th Annual Mtg. of the Assoc. for Computational Linguistics. Madrid.  Morgan-Kauffman Publishers, San Francisco. Pp. 476-481.
+
+在這篇paper中，建立了一個自動從大量的corpora中擷取Collocations，也就是所謂的慣用語，分為兩個部分。
+第一個部分是根據的是這個詞(或句)中各個字同時存在的比率，要高於一定的threshold，第二部分是再加上參考它們之間彼此的順序，找出最常見的組合。
+% }}}
+\section{Proposed Method} % {{{
+\begin{enumerate}
+\item 資料搜集
+	\begin{enumerate}
+	\item 首先建立一份景點 list，也就是原先的景點是由我們自己人工決定的。將這些景點依上述方法分別到blog內搜尋，得到每個景點的相關文章。（共有 47 個景點，每個景點 100～300 篇文章不等）
+	\item 找出 blog 文章的內文部份，只留中文部份建 2～4-grams，過濾掉次數過少的字，當作所有可能產生的 term list。（約十幾萬個 terms）
+	\end{enumerate}
+\item 從 term list 中，找出屬於各個景點的 keywords。
+	\begin{enumerate}
+	\item 統計每個 term 在各個景點文章中含有這個 term 的文章比例。
+	\item 成為 keywords 必須滿足兩個條件
+		\begin{enumerate}
+		\item 含有的比例必須大於一個上限。（此處為 $20\%$）
+		\item $\frac{\textit{此景點含有的比例}}{\textit{其餘景點含有的比例}}$ 要大於一個上限。（此處為 $2.5$）
+		\end{enumerate}
+	\end{enumerate}
+\item 過濾掉 noise keyword
+	\begin{enumerate}
+	\item 過濾掉景點本身。（通常景點本身就是 keyword）
+	\item 我們使用 skip word list，將一些擁有常用字的 keywords 過濾掉。
+	\end{enumerate}
+\end{enumerate}
+% }}}
+\section{Evaluation} % {{{
+根據產生的結果，我們可以分以下幾點來探討：
+\begin{itemize}
+\item 景點的選擇。（scale 的大小）
+\item 中文使用習慣。
+\item 語義(Semantic)問題。
+\item 取詞問題。
+\end{itemize}
+\subsection*{景點的選擇}
+起初在景點的選擇上我們就碰上了不少問題，到底是要著名景點找特色(陽明山→海芋)，還是地方找著名景點或特色(台北→陽明山)，但後來由於景點 list 不夠多的情況下，兩者我們都有放到景點list中，但由於這兩種的 level(或者 scale)不同，所以找的結果也會受到影響，範圍小的會比較容易找出其特色，範圍大的容易因為多樣性而無法找到大量的景點或特色。
+
+舉例來講，當我們找尋”新竹”時，我們只能找到”內灣”。但當我們搜尋內灣時，我們可以找到”內灣吊橋”、”內灣老街”、”內灣戲院”、”客家”、”野薑花粽”、”新竹”、”薰衣草森林”等特色。不過某方面而言，一些地方的遊記也可以當作不錯的 data set，濾掉一些旅遊相關的 general keyword。
+
+\subsection*{中文使用習慣}
+一些中文使用習慣也會影響到搜尋結果。舉例來說，像是錯字及近似意思的詞，錯字例如砂卡礑(砂卡噹、砂卡璫、砂卡當)等會影響計算的比例，導致結果為「砂卡」；而姊（姐）妹潭則會取出「妹潭」。近似意思例如吃海鮮(吃海產)，會導致結果為「吃海」。
+	
+另外台灣人常常會將名詞做一些簡稱，例如「貓空纜車」及「貓纜」，這樣也容易造成統計上的誤差。
+
+\subsection*{語義問題}
+由於在前面所提到，找特色的方法是依照字在文章的含有比例來計算，無法針對 semantic meaning 多加解釋，無法分辨是否其為景點特色的字，所以只要是比例高的字即有可能為 keyword，導致有可能會有如「快樂」、「無聊」等情緒詞、「第一天」、「第二天」等無關之詞，不過我們相信當 data set 增大後，此問題將會減少。
+
+\subsection*{取詞問題}
+因為我們只採用了 2～4-grams，所以會產生一些過短的斷詞，例如「太魯閣國家公園」和「阿里山森林遊樂區」會被斷成「太魯閣國」、..............、「國家公園」及「阿里山森」、..............、「林遊樂區」等，這問題應可在調整 n-gram 的 size 後解決。
+% }}}
+\section{Discussion and Conclusions} % {{{
+在 Web 2.0 的時代，blog 的盛行，大家也樂於在 blog 上發表心得文章。漸漸 blog 已經成為一個大型卻散亂的資訊站。
+於是我們想嘗試著從 blog 繁雜的資料中，去萃取出簡潔的資訊。
+
+其中旅遊心得一直為 blog 文章中常見的主題。
+我們以景點做分類，藉由統計方法，找出各個景點重要的 keyword，以最簡單的形式，統整眾人的意見，幫助使用者理解各個景點的特色。
+另一方面也可以藉此加深「台灣印象」。
+
+另外在這次作業裡我們並未完成建構 system 這個目標。建構 system 的問題比我們想像中的複雜，如何 retrain model？如何擴充 terms？如何在效率上做 trade off？很可惜地我們尚未得出一個很好的想法，不過這也成為我們未來可能可以努力的目標。
+
+或者我們可以改善我們表示的方法，多做一點連結（圖、文等等），以更 firendly 的介面給使用者。
+% }}}
+\section{Misc} % {{{
+\subsection*{Contact Info}
+\begin{itemize}
+\item R96922011 莊典融: r96011@csie.ntu.edu.tw
+\item R96922012 廖瑋星: r96012@csie.ntu.edu.tw
+\item R96922125 沈思廷: r96125@csie.ntu.edu.tw
+\end{itemize}
+% }}}
+\end{CJK}
+\end{document}

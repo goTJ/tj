@@ -1,0 +1,250 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{DCC HW1}
+\author{B92902106 資訊三 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@csie.org, 謝謝}}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+% {{{ \begin{abstract}
+\begin{abstract}
+我一共寫了 DPCM、VQ、Linear Prediction 等方式來壓縮聲音，並使用了 uniform、$\mu$-law%
+、A-law 來做 quantization，總並完成了題目要求 (a)(b) 以及 bonus (1)(2)(3)，%
+以下將針對程式架構及實作細節加以解說。
+\end{abstract}
+% }}}
+% {{{ \section{Environment}
+\section{Environment}
+　　原先我用 matlab 來寫，但由於效率太差了，因此改用 C++ 來寫，並在 Linux 上實作並測試。
+
+\subsection*{Requirement}
+\subsubsection*{Hardware}
+\begin{itemize}
+	\item An 32-bit Intel machine runs linux.
+\end{itemize}
+\subsubsection*{Software}
+\begin{itemize}
+	\item g++ (well test in ver. 4.0.2)
+	\item make
+	\item unzip (for extract files)
+	\item perl(optional) (runs some script)
+\end{itemize}
+
+\subsection*{Installation}
+　　不需安裝，只需要解壓縮就好了，方法如下：
+\begin{verbatim}
+$ unzip dcc_hw1.zip
+\end{verbatim}
+　　如此便會產生一個目錄 dcc\_hw1，內含 DCC hw1 的相關檔案。
+% }}}
+% {{{ \section{Bit IO}
+\section{Bit IO}
+　　在講解 quantization 之前，我想有必要稍微提及 bit IO，由於 quantization 可能將一個 sample
+用幾個 bits 來表示，而一般程式輸出的最小單位為 byte，因此我們需要一個介面來處理 bit IO。
+因此我寫了 bitio.h ，內有:
+\begin{verbatim}
+int input(int bit, FILE *fin);
+void output(int data, int bit, FILE *fout);
+\end{verbatim}
+負責讀取或輸出 bit。
+% }}}
+% {{{ \section{Quantization}
+\section{Quantization}
+　　無論是 DPCM 或 Linear Prediction，都需要利用 quantization 來將值量化，因此在 quantize.h
+中我寫了一個 interface Quan:
+\begin{verbatim}
+class Quan{
+public:
+        virtual ~Quan(){};
+        virtual unsigned int encode(int val)=0;
+        virtual int decode(unsigned int code)=0;
+};
+\end{verbatim}
+　　然後又寫了 class QuanByUni, QuanByMu, QuanByA，繼承 interface Quan，%
+分別實作 uniform、$\mu$-law、A-law quantization。
+其中值得一提的是關於 uniform quantizaton 的部分，其 $V_k$ 及 $J_k$ 的分布如圖：
+\begin{center}
+\includegraphics[scale=0.8]{uniform.png}
+\end{center}
+　　如圖的 (a) 所示，我是將 $[-|Max|,|Max|]$ 的範圍等分成 $L=2^R$ 塊，再以中間值做為代表值，%
+可是當 $|Max|$ 很大時，而 $L$ 又很小時，若仍以中間值做為代表值的話，對於較小的值，%
+經過量化後將會變成一個過大的值，因此對於情形，我將代表值定為如圖的 (b) 所示，%
+為範圍內絕對值最小的值加上 $500$。\\
+　　至於 $\mu$-law 及 A-law，僅是先將 value 對應到一個新值，使得 value 較小的部分對應到較大的範圍，%
+然後再做 uniform quantization，其目的在於達到 uniform $SNR_Q$。
+% }}}
+% {{{ \section{DPCM}
+\section{DPCM}
+\subsection*{Principle}
+　　DPCM 主要是傳送此 sample 跟上一個 sample 之間的差距，由於通常 sample 間的差距會小於其值，%
+因此可以使用較少的 bit 來 quantization 以達到壓縮的效果。
+\subsection*{How to Execute}
+　　DPCM 壓縮與解壓縮的 source code 為 transmitterDPCM.cpp, receiverDPCM.cpp，若想產生執行檔，%
+只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make DPCM
+\end{verbatim}
+　　如此便會產生 transmitterDPCM 及 receiverDPCM 兩個程式，其用法如下：
+\begin{verbatim}
+$ ./transmitterDPCM
+Usage: ./transmitterDPCM [-m|-a|-u] [-number] pcm_filename
+        -u: quantizate by uniform
+        -m: quantizate by mu-law
+        -a: quantizate by mu-law
+        -number: number of bit per sample (suggestion: 4~8)
+$ ./receiverDPCM
+Usage: ./receiverDPCM [-m|-a|-u] [-number] dpcm_filename
+       -u: quantizate by uniform
+       -m: quantizate by mu-law
+       -a: quantizate by mu-law
+       -number: number of bit per sample (suggestion: 4~8)
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./transmitterDPCM -a -5 file.pcm|，就會以 A-law 來做 quantizaion，
+而每個值都用 5 bits 來表示，結果將寫入 file\_D\_a\_5.dpcm。
+若不輸入任何參數時，將會以 $\mu$-law 來做 quantization，而每個值都用 4 bits 來表示。
+而 receiverDPCM 用法與 transmitterDPCM 類似。\\
+　　另外我還寫了一個 script runDPCM.sh，可以自動以三種方法、2～8 bits 去處理
+100070.pcm 及 100087.pcm 這兩個檔案。 用法如下：
+\begin{verbatim}
+$ chmod +x runDPCM.sh
+$ ./runDPCM.sh
+\end{verbatim}
+% }}}
+% {{{ \section{Linear Prediction}
+\section{Linear Prediction}
+\subsection*{Principle}
+　　Linear Prediction(以下簡稱為 LP)算是 DPCM 的延伸，假定利用目前 sample 跟之前 sample
+皆有相關，試圖減少更多的 bits 來做表示 sample。 我是直接利用 Wiener-Hopf Equations
+動態運算權值，參考前 4 個 sample，window size 為 21 。 其值的設定可在 lp\_config.h 內更改。
+\subsection*{How to Execute}
+　　LP 壓縮與解壓縮的 source code 為 transmitterLP.cpp, receiverLP.cpp，若想產生執行檔，%
+只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make LP
+\end{verbatim}
+　　如此便會產生 transmitterLP 及 receiverLP 兩個程式，其用法如下：
+\begin{verbatim}
+$ ./transmitterLP
+Usage: ./transmitterLP [-m|-a|-u] [-number] pcm_filename
+        -u: quantizate by uniform
+        -m: quantizate by mu-law
+        -a: quantizate by mu-law
+        -number: number of bit per sample (suggestion: 4~8)
+$ ./receiverLP
+Usage: ./receiverLP [-m|-a|-u] [-number] lppcm_filename
+       -u: quantizate by uniform
+       -m: quantizate by mu-law
+       -a: quantizate by mu-law
+       -number: number of bit per sample (suggestion: 4~8)
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./transmitterLP -a -5 file.pcm|，就會以 A-law 來做 quantizaion，
+而每個值都用 5 bits 來表示，結果將寫入 file\_LP\_a\_5.lppcm。
+若不輸入任何參數時，將會以 $\mu$-law 來做 quantization，而每個值都用 4 bits 來表示。
+而 receiverLP 用法與 transmitterLP 類似。\\
+　　另外我還寫了一個 script runLP.sh，可以自動以三種方法、2～8 bits 去處理
+100070.pcm 及 100087.pcm 這兩個檔案。 用法如下：
+\begin{verbatim}
+$ chmod +x runLP.sh
+$ ./runLP.sh
+\end{verbatim}
+% }}}
+% {{{ \section{VQ}
+\section{VQ}
+\subsection*{Principle}
+　　VQ 是利用事先產生好的 codebook ，將多個 samples 對應到 codebook 上的值，如此就只需要傳送
+codebook 的 index 就好了，而不用真正傳送 sample ，以達到壓縮的效果。\\
+　　而對於產生 codebook 的方法，我先使用 k-means 來 split 成多個 vector，再利用
+Lloyd-Max algorithm 來 training，直到 $|D^{(m+1)} - D^{(m)}| < \epsilon(threshold)$ 時才停止。
+
+\subsection*{How to Train Codebook}
+　　由於必須在事前 training codebook，因此我寫了一個程式負責 training codebook，欲產生執行檔，
+請鍵入：
+\begin{verbatim}
+$ make trainingVQ
+\end{verbatim}
+　　要 training，必須要有 training data，我便使用 100070.pcm 及 100087.pcm 做為 data，其使用方式如下：
+\begin{verbatim}
+$ ./trainingVQ 100070.pcm 100087.pcm
+\end{verbatim}
+　　如此便會以 100070.pcm 及 100087.pcm training 出 codebook，若我們希望 training 4-dim, 1024 組,
+epsilon=0.01 的codebook，只需在 trainingVQ.cpp 中更改 DIM, VQ\_SIZE, EPSILON 的值就好了。
+如此便會產生 VQ-4-1024-0\_01.txt，裡面存著 codebook 的資料。
+
+\subsection*{How to Execute}
+　　VQ 壓縮與解壓縮的 source code 為 transmitterVQ.cpp, receiverVQ.cpp，若想產生執行檔，%
+只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make VQ
+\end{verbatim}
+　　如此便會產生 transmitterVQ 及 receiverVQ 兩個程式，其用法如下：
+\begin{verbatim}
+$ ./transmitterVQ
+Usage: ./transmitterVQ VQ_filename pcm_filename
+$ ./receiverVQ
+Usage: ./receiverVQ VQ_filename vqpcm_filename
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./transmitterVQ VQ-4-1024-0_01.txt file.pcm|，
+就會以 VQ-4-1024-0\_01.txt 這檔案做為 codebook 來做壓縮，並將結果寫入 file\_VQ\_4\_1024.vqpcm。
+而 receiverVQ 用法與 transmitterVQ 類似。\\
+　　另外我還寫了一個 script runVQ.pl，可以自動以所有的 codebook 去處理
+100070.pcm 及 100087.pcm 這兩個檔案。 用法如下：
+\begin{verbatim}
+$ chmod +x runVQ.pl
+$ ./runVQ.pl
+\end{verbatim}
+　　由於 training codebook 將花費較多時間，因此我直接附上一些 codebook。
+% }}}
+% {{{ \section{Summary}
+\section{Summary}
+　　在比較完各種壓縮法後，個人認為壓縮能力好壞依序為：VQ、DPCM、LP。
+跟原先預想的 VQ、LP、DPCM 有出入。 原因在於 LP 常常會預測出極大的誤差，%
+因此無法如預期般達到良好的壓縮效果，反而比 DPCM 還差，不過也有可能是我程式沒寫得很好。\\
+　　另外針對於各種壓縮法的壓縮率，經測試 VQ 對於 2-dim, 16組的 codebook，仍可辨視，但品質不算很好，%
+大約使用 4-dim, 1024組的 codebook，就能得到一定品質的聲音。 一旦將加大 dim ，則對於同樣壓縮率的
+codebook，可以得到較好的品質，像 8-dim, 65536組的 codebook 品質就比 4-dim, 256組好。\\
+　　對於 DPCM，使用 $\mu$-law 或 A-law，用 3 bits 來 quantization 仍可保持原音，%
+4 bits 可得一定的品質，5 bits 可得不錯的品質。而對於 uniform 來說，%
+用 4 bits 來 quantization 仍可保持原音，用 5 bits 可得一定的品質，6 bits 可得不錯的品質。\\
+　　對於 LP，使用 $\mu$-law 或 A-law，用 4 bits 來 quantization 仍可保持原音，%
+5 bits 可得一定的品質，6 bits 可得不錯的品質。而對於 uniform 來說，%
+用 5 bits 來 quantization 仍可保持原音，用 6 bits 可得不錯的品質。\\
+　　以處理時間的多寡來分析的話，VQ 所花的時間最長(當 codebook 的 size 很大時)，LP 次之， DPCM 最快。
+以下將結論製成表格如下。
+\begin{center}
+\begin{tabular}[t]{|c|c|c|c|}
+\hline
+	 & VQ & DPCM & LP \\
+	\hline
+	壓縮品質 & 最佳 & 中等 & 最差 \\
+	\hline
+	處理速率 & 最慢 & 最快 & 中等 \\
+	\hline
+	實作難度 & 中等 & 最易 & 最難 \\
+	\hline
+	Mem用量  & 最多 & 最少 & 中等 \\
+	\hline
+\end{tabular}
+\end{center}
+% }}}
+\end{CJK} % }}}
+\end{document}

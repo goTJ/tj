@@ -1,0 +1,66 @@
+Compiler HWK#4 Due date: 2:20pm, May 18, 2006
+
+Write a simple compiler-interpreter for a simple PASCAL-like
+expression language.
+
+A sample program is as follows:
+
+       PROGRAM program_name
+       VAR %% beginning of variable declarations, required even no var's
+          x, y, z: REAL;
+       BEGIN
+          READ(y);
+          x := (y + 3.0 * 4.0) - 5.0;
+          WRITE(y);
+          WRITESP();
+          WRITE(x);
+          WRITELN();
+       END
+
+The definition of the language is as follows:
+1. Case-sensitive with reserved words.
+2. Assignment is ":=", no space is allowed between ":" and "=".
+   the statement terminator is ";"
+   each line has at most one statement
+3. Variable must be declared before its usage.
+   Variable/program names follow C style.
+   Can have only the type of REAL (4-byte signed)
+4. Can have only three different statements:
+   a. assignment of expressions, where expressions
+      can have variables, real-constant, (, ), +, -, *, / and
+      minus "-".
+      A real-constant is in the form of "digits.digits",
+      where digits = [0-9]+
+   b. input statement
+         READ(single variable)
+   c. output statements
+         WRITE(single variable) ---  output a variable using "%f" format
+         WRITESP()              ---  output a single space
+         WRITELN()              ---  write a new line
+   There is no space before and in between "()" for WRITESP() and
+   WRITELN().
+5. Anything after %% are comments until to the end of the line.
+   Allow white space of tab and space.
+   Can have empty lines.
+   Cannot have empty statements, ie, a line with only a ";" is illegal.
+6. Must detect the following error and reports its line number:
+    a. invalid ID names(including reserve word, i.e. PROGRAM, VAR, BEGIN, END, READ, WRITE, WRITESP, WRITELN)
+    b. undeclared variables
+    c. a variable declared twice
+    d. illegal syntax
+7. Must run the program and produce outputs accordingly if there is no error.
+
+Hints: (1) Assume <= 256 variables can be declared.
+           Each variable name has at most 32 characters.
+           First allocate 256*4 bytes and keep track of
+           the address of each variable.
+       (2) The semantics of a variable name are different
+           on the LHS and RHS of an assignment.
+              LHS: retrieve the storage address of a variable and store
+                   a value from the RHS to it
+              RHS: retrieve the value of the variable
+
+Note:    You need to have LEX and YACC programs.
+Your program code is in the file "program.p".
+LEX takes input from program.p.
+Your keyboard input becomes the standard input of your program.

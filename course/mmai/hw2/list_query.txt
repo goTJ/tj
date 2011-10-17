@@ -1,0 +1,3 @@
+./dataset/00query00/baseball field.JPG
+./dataset/00query00/flower.JPG
+./dataset/00query00/memorial tower.JPG

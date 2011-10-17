@@ -1,0 +1,57 @@
+# Project: SDD
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = SDD_private.res
+OBJ  = main.o sdd.o EncodingTable.o FormatNormalizer.o forward.o Pattern.o qm.o Set.o TransTable.o $(RES)
+LINKOBJ  = main.o sdd.o EncodingTable.o FormatNormalizer.o forward.o Pattern.o qm.o Set.o TransTable.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -Wl,--subsystem,windows -mwindows -lwxmsw -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -ladvapi32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid    
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = SDD.exe
+CXXFLAGS = $(CXXINCS) -DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -DHAVE_W32API_H  -D__WXMSW__ -D__WINDOWS__ -Wall -fno-pcc-struct-return -O2 -Os -fno-rtti -fno-exceptions  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before SDD.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "SDD.exe" $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+sdd.o: sdd.cpp
+	$(CPP) -c sdd.cpp -o sdd.o $(CXXFLAGS)
+
+EncodingTable.o: EncodingTable.cpp
+	$(CPP) -c EncodingTable.cpp -o EncodingTable.o $(CXXFLAGS)
+
+FormatNormalizer.o: FormatNormalizer.cpp
+	$(CPP) -c FormatNormalizer.cpp -o FormatNormalizer.o $(CXXFLAGS)
+
+forward.o: forward.cpp
+	$(CPP) -c forward.cpp -o forward.o $(CXXFLAGS)
+
+Pattern.o: Pattern.cpp
+	$(CPP) -c Pattern.cpp -o Pattern.o $(CXXFLAGS)
+
+qm.o: qm.cpp
+	$(CPP) -c qm.cpp -o qm.o $(CXXFLAGS)
+
+Set.o: Set.cpp
+	$(CPP) -c Set.cpp -o Set.o $(CXXFLAGS)
+
+TransTable.o: TransTable.cpp
+	$(CPP) -c TransTable.cpp -o TransTable.o $(CXXFLAGS)
+
+SDD_private.res: SDD_private.rc SDD.rc 
+	$(WINDRES) -i SDD_private.rc --input-format=rc -o SDD_private.res -O coff  --include-dir C:/Dev-Cpp/include/

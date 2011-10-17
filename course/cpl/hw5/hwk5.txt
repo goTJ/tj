@@ -1,0 +1,157 @@
+Compiler HWK#5 Due date: 2:20pm, June 8, 2006
+
+Write a simple compiler to parse
+a simple PASCAL-like expression language with block structures
+and nested procedures using lexical scoping rule.
+No code generation is needed.
+
+A sample program is as follows:
+
+       PROGRAM program_name
+          VAR %% beginning of variable declarations, required even no var's
+          x, y, z: INTEGER;
+          a : REAL;
+          ENDVAR
+          PROCEDURE procedure_name_1
+              VAR
+              a, aa: REAL;
+              ENDVAR
+	      PROCEDURE procedure_name_1_1
+              VAR
+                %%...
+              ENDVAR
+	      %% no PROCEDURE def
+              BEGIN
+                %%...
+              END
+          BEGIN
+              a := 33.33;
+              WRITE(a);
+              WRITELN();
+          END
+          PROCEDURE procedure_name_2
+	  %% no VAR and PROCEDURE def
+          BEGIN
+             %%....
+	  END
+       BEGIN
+          READ(y);
+          x := (y + 3 * 4) - 5;
+            BEGIN
+                VAR
+                  w, x, z: REAL;
+                ENDVAR
+                x := 2.0;
+                WRITE(x);
+                WRITESP();
+                procedure_name_1();
+                WRITE(y);
+                WRITELN();
+            END
+          WRITE(y );
+          WRITESP( );
+          WRITE(x);
+          WRITELN( ) ;
+       END
+
+The definition of your language is as follows:
+1. This language is case-sensitive with reserved words.
+    1.1 <main program def>
+        PROGRAM name
+         optional var decl
+         optional procedure def
+        BEGIN
+         statements or blocks
+        END
+    1.2 <optional var decl>
+        VAR
+        ...
+        ENDVAR
+
+        VAR ... ENDVAR is a declaration of local variables which can be
+        empty or completely missing.
+        VAR ... ENDVAR must be before any statements and can have only
+        one appearance.
+
+    1.3 <optional procedure def>
+        PROCEDURE name
+        optional var decl
+        optional procedure def
+        BEGIN
+         statements or blocks
+        END
+
+        Procedure definition is in between VAR...ENDVAR and
+        BEGIN of statements.
+    1.4 <block>
+        BEGIN
+           optional var decl
+	   statements or blocks
+        END
+
+        BEGIN and END starts and ends a block, respectively.
+    1.5 procedure name treats like a special variable
+        and follows lexical scoping rule
+    1.6 <statements>
+       a. assignment of expressions, where expressions
+          can have variables, real-constant,
+          integer-constant, (, ), +, -, *, / and "uminus".
+          assignment is ":=",
+       b. input statement
+          READ(single variable)
+       c. output statements
+          WRITE(single variable) ---  output a variable
+          WRITESP()              ---  output a single space
+          WRITELN()              ---  write a new line
+          There may have spaces before, in between or after "()".
+       d. Procedure call is in the form of
+              procedure_name()
+          There may have spaces before, in between or after "()".
+       e. The statement terminator is ";"
+    
+2. each line has at most one statement
+   can have a blank line
+   cannot have a null statement
+3. Two different data types: INTEGER and REAL.
+   Each occupies 4 bytes.
+   No type conversion is allowed.
+4. variable must be declared before its usage.
+   variable/program names uses the rule as HWK4.
+   However, the length of a variable name is 1024. There can have lots
+   of variables. I expect you to use either hash table or
+   balanced-binary search tree for symbol tables.
+5. Anything after %% are comments until to the end of the line.
+6. Must detect the following error and reports its line number:
+    a. invalid ID names
+    b. undeclared variables
+    c. illegal syntax
+    d. duplicatedly declared variables
+    e. mismatched data type
+    f. undefined procedure.
+    g. duplicatedly declared procedure
+    h. invalid constant
+    i. other type of errors that you can handle
+        document these extra types of errors
+   Must detect as many possible errors as you can.
+
+Note:     (1) To submit your homework, use the software submission
+system designed by TA. Read TA's web site for details.
+          (2) You need to have LAX and YACC programs.
+
+This homework MUST execute on Linux or FreeBSD workstations in our department.
+Submitting files include a lex file, a Makefile, and optional C codes. The
+Makefile MUST supports "make clean" and "make all" for cleaning,
+and building the homework. An example of the Makefile can be
+obtained from the course web. Do not use the samples without proper
+changes.
+The name of your executable after "make all" must be "hwk5".
+
+To compile a program, type
+         hwk5 filename.p
+
+Your compiler reports each error line by line.
+If there is no error, then report so.
+
+
+
+

@@ -1,0 +1,287 @@
+/* piaip at csie dot org: pacdo CSS */
+/* vim:foldenable:foldmethod=marker
+*/
+
+/* {{{ common modification */
+IMG {
+	border: none;
+}
+A {
+	color: #55c;
+}
+
+A:hover {
+	color: #d66;
+	text-decoration: none;
+}
+
+A:visited {
+	color: #66d;
+}
+
+BODY {
+	background: rgb(92%, 92%, 97%);
+/*	background-image: url(pics/bg-default.jpg);*/
+	margin: 0;
+	border: 0;
+	font-family: Verdana,"Trebuchet MS","Gill Sans","Microsoft Sans Serif",Verdana,sans-serif;
+	font-size: 12px;
+}
+
+tr{
+	font-family: Verdana,"Trebuchet MS","Gill Sans","Microsoft Sans Serif",Verdana,sans-serif;
+	font-size: 13px;
+}
+/* }}} */
+/* {{{ logo */
+/* {{{ example:
+	<div class="logo">
+		<a href""><img src=""></a>
+		<span class="update">
+		Update: 2005/08/04
+		</span>
+	</div><br/>
+}}} */
+div.logo {
+	float: none;
+	clear: both;
+	background: #8878c8;
+	border-bottom: 1px solid #333;
+	border-right: 1px solid #333;
+	margin-bottom: 1.5em;
+	padding-left: 3em;
+	/* background-image: url(../valid-html401.png); */
+	background-repeat: no-repeat;
+	background-position: right bottom;
+}
+
+div.logo span.title {
+	font-family: 'Times New Roman', times, serif;
+	font-weight: bold;
+	font-style: italic;
+	font-size: 3.5em;
+	color: rgb(89%, 89%, 99%);
+}
+
+div.logo span.update {
+	text-align: right;
+	text-align: right;
+	position: absolute; right: 0.5em;
+	position: absolute; top: 0.5em;
+	font-family: 'Times New Roman', times, serif;
+	font-weight: bold;
+	font-style: italic;
+	font-size: 1.0em;
+	color: rgb(89%, 89%, 99%);
+}
+/* }}} */
+/* {{{ main */
+/* {{{ example:
+	<div class="main">
+		<H1> flyhermit at csie dot org </H1>
+		<H2> page topic </H2>
+		<H3> current topic </H3>
+		<div class="lbox"><H4>
+			Date/Time/Subject </H4>
+			Content
+		</div>
+		<div class="lbox"><H4>
+			Date/Time/Subject </H4>
+			Content
+		</div>
+	</div>
+}}} */
+div.main {
+	margin-top: 0.1em;
+	margin-bottom: 2em;
+	margin-right: 13em;
+	margin-left: 13em;
+	/*background: rgb(98%, 98%, 98%);
+	border: 1px dashed rgb(99%, 99%, 99%);
+	*/
+}
+H1 {
+	color: #000;
+	font-family: Tahoma, Arial, sans-serif;
+}
+H2 {
+	text-decoration: underline;
+	color: #999;
+} 
+/*
+H3 {
+	color: #a78;
+	background: #bce;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+	*/
+div.lbox {
+	background: #d7d0ff;
+	border: 1px solid black;
+	border-top: none;
+	border-left: none;
+	padding: 0.7em;
+	margin-left: 0em;
+	margin-right: 0em;
+	margin-bottom: 0.7em;
+	margin-top: 1.2em;
+	line-height: 2.0em;
+}
+div.lbox h3 {
+	padding-left: 2em;
+	padding-right: 0.5em;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin: 0px;
+	font-size: 11px;
+	background: #c0b0ff;
+	position: relative;
+	top: -1.4em;
+	left: 1em;
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+	max-width: 80%;
+	min-width: 50%;
+	width: 70%;
+}
+div.lbox h3:hover {
+	border: 0;
+	border-left: 1px solid gray;
+	border-top: 1px solid gray;
+}
+div.lbox h4{
+	font-size: medium;
+	line-height: 0em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+div.lbox h5{
+	font-size: small;
+	line-height: 0em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+div.top{
+	float: right;
+	position: fixed;
+	overflow: visible;
+	bottom: 0.5em;
+	right: 0.5em;
+	border: 1px solid #8cacbb;
+	background-color: white;
+	vertical-align: middle;
+	text-decoration:none;
+	font-size: 14px;
+	padding: 0.2em;
+	padding-bottom: 0em;
+	cursor: pointer;
+	height: 22px !important;
+	max-height: 22px !important;
+	min-height: 22px !important;
+}
+div.top a{
+	text-decoration: none;
+	color: Black;
+}
+
+div.main a.label{
+  border: 1px solid #8cacbb;
+  color: #000080;
+  background-color: #e0d8ff;
+  vertical-align: middle;
+  text-decoration:none;
+  font-size: 14px;
+  padding: 0.2em;
+  cursor: pointer;
+  height: 22px !important;
+  max-height: 22px !important;
+  min-height: 22px !important;
+  margin: 1px;
+  display: inline;
+}
+div.main a.label:hover {
+	background: #c8c0ff;
+	color: black;
+	border-left: 1px solid gray;
+	border-top: 1px solid gray;
+}
+/* }}} */
+/* {{{ sidebar */
+/* {{{ example:
+<div class="sidebar">
+<h4>sidebar header</h4>
+<a href="blah"          > BLAH </a>
+<a href="blah" class="e"> BLAH </a>
+<a href="blah"          > BLAH </a>
+<h4>sidebar header</h4>
+</div>
+}}} */
+div.sidebar {
+	float: left;
+	border: 1px solid gray;
+	border-left: 0;
+	border-top: 0;
+	padding: 0px;
+	margin-right: 2em;
+	margin-bottom: 1em;
+	margin-left: 1.1em;
+	margin-top: 0.1em;
+	background: #ffd;
+	font-size: 11px;
+	width: 15em;
+}
+
+div.sidebar p, div.sidebar a, div.sidebar h4 {
+	padding-left: 2em;
+	padding-right: 0.5em;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin: 0px;
+	font-size: 11px;
+}
+
+div.sidebar h4 {
+	background: #a090d0;
+}
+
+div.sidebar A {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #e0e0ff;
+	background: #dadaff;
+	color: #000080;
+}
+
+div.sidebar a.e {
+	border: 1px solid #d0c0ff;
+	background: #d0c0ff;
+}
+
+div.sidebar A:hover {
+	background: #c8c0ff;
+	color: black;
+	border-left: 1px solid gray;
+	border-top: 1px solid gray;
+}
+/* }}} */
+/* {{{ footer */
+/* {{{ example:
+<div class="footer">
+All contents of this site are &copy; 2002 
+<a href="http://csie.org/~piaip/"><b>piaip@csie.org</b></a>.
+All Rights Reserved.  <br>
+</div>
+}}} */
+div.footer {
+	margin: 0;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	text-align: right;
+	background: rgb(80%, 92%, 99%);
+	border-top: 1px solid black;
+	clear: both;
+	font-size: 10pt;
+	font-family: Tahoma, Arial, sans-serif;
+}
+/* }}} */

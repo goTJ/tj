@@ -1,0 +1,226 @@
+./dataset/baseball field/court_01.jpg
+./dataset/baseball field/court_02.jpg
+./dataset/baseball field/court_04.JPG
+./dataset/baseball field/court_05.JPG
+./dataset/baseball field/court_06.JPG
+./dataset/baseball field/court_07.jpg
+./dataset/baseball field/court_08.jpg
+./dataset/baseball field/court_09.jpg
+./dataset/baseball field/court_10.jpg
+./dataset/baseball field/court_11.jpg
+./dataset/baseball field/court_12.jpg
+./dataset/baseball field/court_13.jpg
+./dataset/baseball field/court_14.jpg
+./dataset/baseball field/court_15.jpg
+./dataset/baseball field/court_16.jpg
+./dataset/baseball field/court_17.jpg
+./dataset/baseball field/court_18.jpg
+./dataset/baseball field/court_19.jpg
+./dataset/baseball field/court_20.jpg
+./dataset/building/building_01.JPG
+./dataset/building/building_02.JPG
+./dataset/building/building_03.JPG
+./dataset/building/building_04.JPG
+./dataset/building/building_05.JPG
+./dataset/building/building_06.JPG
+./dataset/building/building_07.JPG
+./dataset/building/building_08.JPG
+./dataset/building/building_09.JPG
+./dataset/building/building_10.JPG
+./dataset/building/building_11.JPG
+./dataset/building/building_12.JPG
+./dataset/building/building_13.JPG
+./dataset/building/building_14.JPG
+./dataset/building/building_15.JPG
+./dataset/building/building_16.JPG
+./dataset/building/building_17.JPG
+./dataset/building/building_18.JPG
+./dataset/building/building_19.JPG
+./dataset/building/building_20.JPG
+./dataset/building/building_21.JPG
+./dataset/building/building_22.JPG
+./dataset/church/church_01.JPG
+./dataset/church/church_02.jpg
+./dataset/church/church_03.jpg
+./dataset/church/church_04.jpg
+./dataset/church/church_05.JPG
+./dataset/church/church_06.JPG
+./dataset/church/church_07.JPG
+./dataset/church/church_08.JPG
+./dataset/church/church_09.JPG
+./dataset/church/church_10.JPG
+./dataset/church/church_11.JPG
+./dataset/church/church_12.JPG
+./dataset/church/church_13.JPG
+./dataset/church/church_14.JPG
+./dataset/church/church_15.jpg
+./dataset/church/church_16.jpg
+./dataset/church/church_17.jpg
+./dataset/church/church_18.jpg
+./dataset/church/church_19.jpg
+./dataset/church/church_20.jpg
+./dataset/church/church_21.jpg
+./dataset/door/door_01.JPG
+./dataset/door/door_02.JPG
+./dataset/door/door_03.JPG
+./dataset/door/door_04.JPG
+./dataset/door/door_05.JPG
+./dataset/door/door_06.JPG
+./dataset/door/door_07.JPG
+./dataset/door/door_08.JPG
+./dataset/door/door_09.JPG
+./dataset/door/door_10.JPG
+./dataset/door/door_11.JPG
+./dataset/door/door_12.JPG
+./dataset/door/door_13.JPG
+./dataset/door/door_14.JPG
+./dataset/door/door_15.JPG
+./dataset/door/door_16.JPG
+./dataset/door/door_17.JPG
+./dataset/door/door_18.JPG
+./dataset/door/door_19.JPG
+./dataset/door/door_20.JPG
+./dataset/flower/flower_01.jpg
+./dataset/flower/flower_02.jpg
+./dataset/flower/flower_03.JPG
+./dataset/flower/flower_04.JPG
+./dataset/flower/flower_05.JPG
+./dataset/flower/flower_06.JPG
+./dataset/flower/flower_07.JPG
+./dataset/flower/flower_08.JPG
+./dataset/flower/flower_09.JPG
+./dataset/flower/flower_10.JPG
+./dataset/flower/flower_12.jpg
+./dataset/flower/flower_13.jpg
+./dataset/flower/flower_14.jpg
+./dataset/flower/flower_15.jpg
+./dataset/flower/flower_16.jpg
+./dataset/flower/flower_17.jpg
+./dataset/flower/flower_18.jpg
+./dataset/flower/flower_19.jpg
+./dataset/flower/flower_20.jpg
+./dataset/flower/flower_21.jpg
+./dataset/food/food_01.JPG
+./dataset/food/food_02.JPG
+./dataset/food/food_03.JPG
+./dataset/food/food_04.JPG
+./dataset/food/food_05.JPG
+./dataset/food/food_06.JPG
+./dataset/food/food_07.JPG
+./dataset/food/food_08.JPG
+./dataset/food/food_09.JPG
+./dataset/food/food_10.JPG
+./dataset/food/food_11.JPG
+./dataset/food/food_12.JPG
+./dataset/food/food_13.JPG
+./dataset/food/food_14.JPG
+./dataset/food/food_15.JPG
+./dataset/food/food_16.JPG
+./dataset/food/food_17.JPG
+./dataset/food/food_18.JPG
+./dataset/food/food_19.JPG
+./dataset/food/food_20.JPG
+./dataset/memorial tower/tower_01.jpg
+./dataset/memorial tower/tower_02.JPG
+./dataset/memorial tower/tower_03.JPG
+./dataset/memorial tower/tower_04.JPG
+./dataset/memorial tower/tower_05.JPG
+./dataset/memorial tower/tower_06.JPG
+./dataset/memorial tower/tower_08.JPG
+./dataset/memorial tower/tower_09.JPG
+./dataset/memorial tower/tower_10.JPG
+./dataset/memorial tower/tower_11.JPG
+./dataset/memorial tower/tower_12.JPG
+./dataset/memorial tower/tower_13.JPG
+./dataset/memorial tower/tower_14.JPG
+./dataset/memorial tower/tower_15.JPG
+./dataset/memorial tower/tower_16.jpg
+./dataset/memorial tower/tower_17.jpg
+./dataset/memorial tower/tower_18.jpg
+./dataset/memorial tower/tower_19.jpg
+./dataset/memorial tower/tower_20.jpg
+./dataset/mountain/mountain_01.jpg
+./dataset/mountain/mountain_02.jpg
+./dataset/mountain/mountain_03.jpg
+./dataset/mountain/mountain_04.jpg
+./dataset/mountain/mountain_05.jpg
+./dataset/mountain/mountain_06.jpg
+./dataset/mountain/mountain_07.jpg
+./dataset/mountain/mountain_08.jpg
+./dataset/mountain/mountain_09.jpg
+./dataset/mountain/mountain_10.jpg
+./dataset/mountain/mountain_11.jpg
+./dataset/mountain/mountain_12.jpg
+./dataset/mountain/mountain_13.jpg
+./dataset/mountain/mountain_14.jpg
+./dataset/mountain/mountain_15.jpg
+./dataset/mountain/mountain_16.jpg
+./dataset/mountain/mountain_17.jpg
+./dataset/mountain/mountain_18.jpg
+./dataset/mountain/mountain_19.jpg
+./dataset/mountain/mountain_20.jpg
+./dataset/mountain/mountain_21.jpg
+./dataset/mountain/mountain_22.jpg
+./dataset/mountain/mountain_23.jpg
+./dataset/railroad/railroad_01.jpg
+./dataset/railroad/railroad_02.jpg
+./dataset/railroad/railroad_03.jpg
+./dataset/railroad/railroad_04.jpg
+./dataset/railroad/railroad_05.jpg
+./dataset/railroad/railroad_06.jpg
+./dataset/railroad/railroad_07.jpg
+./dataset/railroad/railroad_08.JPG
+./dataset/railroad/railroad_09.JPG
+./dataset/railroad/railroad_10.JPG
+./dataset/railroad/railroad_11.JPG
+./dataset/railroad/railroad_12.JPG
+./dataset/railroad/railroad_13.JPG
+./dataset/railroad/railroad_14.JPG
+./dataset/railroad/railroad_15.JPG
+./dataset/railroad/railroad_16.JPG
+./dataset/railroad/railroad_17.jpg
+./dataset/railroad/railroad_18.jpg
+./dataset/railroad/railroad_19.jpg
+./dataset/railroad/railroad_20.jpg
+./dataset/railroad/railroad_21.jpg
+./dataset/river side/river_01.JPG
+./dataset/river side/river_02.JPG
+./dataset/river side/river_03.JPG
+./dataset/river side/river_04.JPG
+./dataset/river side/river_05.JPG
+./dataset/river side/river_06.JPG
+./dataset/river side/river_07.JPG
+./dataset/river side/river_08.JPG
+./dataset/river side/river_09.JPG
+./dataset/river side/river_10.JPG
+./dataset/river side/river_11.JPG
+./dataset/river side/river_12.JPG
+./dataset/river side/river_13.JPG
+./dataset/river side/river_14.JPG
+./dataset/river side/river_15.JPG
+./dataset/river side/river_16.JPG
+./dataset/river side/river_17.jpg
+./dataset/river side/river_18.jpg
+./dataset/river side/river_19.jpg
+./dataset/river side/river_20.jpg
+./dataset/statue of liberty/liberty_01.jpg
+./dataset/statue of liberty/liberty_02.bmp
+./dataset/statue of liberty/liberty_03.jpg
+./dataset/statue of liberty/liberty_04.jpg
+./dataset/statue of liberty/liberty_05.JPG
+./dataset/statue of liberty/liberty_06.JPG
+./dataset/statue of liberty/liberty_07.JPG
+./dataset/statue of liberty/liberty_08.jpg
+./dataset/statue of liberty/liberty_09.jpg
+./dataset/statue of liberty/liberty_10.jpg
+./dataset/statue of liberty/liberty_11.jpg
+./dataset/statue of liberty/liberty_12.bmp
+./dataset/statue of liberty/liberty_13.jpg
+./dataset/statue of liberty/liberty_14.jpg
+./dataset/statue of liberty/liberty_15.jpg
+./dataset/statue of liberty/liberty_16.jpg
+./dataset/statue of liberty/liberty_17.jpg
+./dataset/statue of liberty/liberty_18.jpg
+./dataset/statue of liberty/liberty_19.jpg
+./dataset/statue of liberty/liberty_20.jpg
+./dataset/statue of liberty/liberty_21.bmp

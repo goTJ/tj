@@ -1,0 +1,42 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{Compiler HW1}
+\author{B92902106 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@csie.org, 謝謝}}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+\subsubsection*{3.10(c)}
+Yes. For each $r\{m, n\}$, we can replace it with concatenating $m$ times of $r$ and $n-m$
+times of $r?$. For example, $r\{2,5\} \equiv rrr?r?r?$.
+\subsubsection*{3.10(d)}
+No. RE can't reference both previous and next characters(it's context-free).
+In addition, now we consider about LEX RE.
+For each $r\$$, we can replace it with $r/[\backslash n]$.
+And for each [\textasciicircum $A$], where $A$ is a set of characters,
+we can replace it with [$\bar{A}$], where $\bar{A}$ is the complement of $A$.
+But for each \textasciicircum$r$, there is no RE that could reference previous input,
+so it's impossible to replace it. (In addition, for LEX, it's possible to use BEGIN to do it.)\\
+Therefore, we can't replace it with neither RE nor LEX RE.
+\end{CJK} % }}}
+\end{document}

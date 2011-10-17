@@ -1,0 +1,293 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{DCC HW2}
+\author{B92902106 資訊三 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@csie.org, 謝謝}}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+% {{{ \begin{abstract}
+\begin{abstract}
+我一共寫了 transmitter、receiver、noise generator、repeater，並支授多種 modulation，%
+全部皆實做在網路上，並以 real-time 的方式傳送。
+\end{abstract}
+% }}}
+% {{{ \section{Environment}
+\section{Environment}
+\subsection*{Requirement}
+\subsubsection*{Hardware}
+\begin{itemize}
+	\item An 32-bit Intel machine runs linux.
+\end{itemize}
+\subsubsection*{Software}
+\begin{itemize}
+	\item g++ (well test in ver. 4.0.2)
+	\item make
+	\item unzip (for extract files)
+	\item perl(optional) (runs some script)
+\end{itemize}
+
+\subsection*{Installation}
+　　不需安裝，只需要解壓縮就好了，方法如下：
+\begin{verbatim}
+$ unzip dcc_hw2.zip
+\end{verbatim}
+　　如此便會產生一個目錄 dcc\_hw2，內含 DCC hw2 的相關檔案。
+% }}}
+% {{{ \section{Preface}
+\section{Preface}
+　　這次作業我大致上的架構為：
+\begin{center}
+\includegraphics[scale=0.8]{arch.png}
+\end{center}
+　　為了要保持 reliable transmission 的性質，以免增加不必要的誤差，所以彼此間我用 TCP 連接%
+（我想用 reliable UDP 的話會更好）。主要的概念是將 NG 視為一虛擬的 channel，%
+傳送時 TR 便將轉換好的資料傳給 NG，再由 NG 產生 noise 後傳給 RV，其中當然也可以增加 RE，%
+將訊號還原再轉換傳送出去。
+% }}}
+% {{{ \section{Translation}
+\section{Translation}
+　　資料傳送必須要以 wave 的形式，因此我們要先將 data 轉成 wave，其方法就是利用 modulation
+將 data 對應到不同的 wave form，如圖為例為 16QAM：
+\begin{center}
+\includegraphics[scale=0.8]{qam.png}
+\end{center}
+　　每一個小紅點代表一 4-bit pattern(Ex: 1010, 0001)，然後 X 軸與 Y 軸分別為 $\phi_1(t) \phi2(t)$：
+\[ \phi_1(t) = (\frac{2}{nT})^{0.5}\cos(2\pi f_ct), [0, T_s=nT] \]
+\[ \phi_2(t) = (\frac{2}{nT})^{0.5}\sin(2\pi f_ct), [0, T_s=nT] \]
+　　所以當我們任取一 4-bit pattern 拿來對應，得到座標 $(x, y)$ 後，便得到了 $x\phi_1(t)+y\phi_2(t)$
+一 wave form，我們便可以以此做傳輸，由於我們是模擬 wave，因此我直接取 sample 來傳送。%
+而 sampling 的方式我是以 $\frac{\pi}{4}$ 為單位，因此得到的 sample 為：
+\[ s_i = \frac{x}{2}\cos(\frac{i\pi}{8})+\frac{y}{2}\sin(\frac{i\pi}{8}), i=0,1,\cdots,7 \]
+　　當要將 sample 轉成座標軸時，我們可以利用內積的概念，得：
+\[ x = \sum_{i=0}^{7}s_i*\frac{1}{2}\cos(\frac{i\pi}{8}) \]
+\[ y = \sum_{i=0}^{7}s_i*\frac{1}{2}\sin(\frac{i\pi}{8}) \]
+　　再利用 $(x, y)$ 即可推得 4-bit pattern。\\
+　　4-bit pattern 與座標軸之間的轉換我是以 class Qam 來處理(in qam.h, qam.cpp)，%
+而將座標軸與 sampling wave 的部分是由 class Physical 處理(in physical.h, physical.cpp)，%
+另外我定義了兩個 struct Coor, Sample，來儲存座標值跟 sampling wave 的值，其格式如下(in struct.h)：
+\begin{verbatim}
+struct Coor{
+        double x;
+        double y;
+};
+struct Sample{
+        double t[8];
+};
+\end{verbatim}
+　　因此實際在傳送時，我是將 bits 轉成 sample，直接傳送整個 struct Sample，%
+然後接收端再讀入整個 Sample，再將之轉回 bits。
+% }}}
+% {{{ \section{Transmitter}
+\section{Transmitter}
+\subsection*{Principle}
+　　Transmitter 功能是讀入一個檔案，並將之轉成 wave 傳到指定 ip:port。%
+並且可利用 $E_0=(\frac{d}{2})^2$ 來調整 wave 振幅，並由 QAM pattern 的分布得 $E_i$，%
+由此可得 $E_b = \frac{E_0}{n}\sum_n E_i$。
+\subsection*{How to Execute}
+　　Transmitter 的 source code 為 transmitter.cpp，若想產生執行檔，只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make transmitter
+\end{verbatim}
+　　如此便會產生 transmitter 程式，其用法如下：
+\begin{verbatim}
+$ ./transmitter
+Usage: ./transmitter filename qamfile target_ip target_port [E0=10000]
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./transmitter 100070.pcm qam_16_a.txt localhost 8888|，%
+就會以 qam\_16\_a.txt 的 modulation 方式將 100070.pcm 以 wave 形式傳至 localhost:8888，%
+而 $E_0$ 為預設值 $10000$。由於我是用 TCP 來傳輸，所以必須要保證連線雙方都存在，%
+因此在建立連線時，需先將 target server 建立好後再啟動 transmitter。
+% }}}
+% {{{ \section{Receiver}
+\section{Receiver}
+\subsection*{Principle}
+　　Receiver 功能是讀入 sampling wave，並將之轉成 bits 存入 file 內。%
+並且以 $E_0=(\frac{d}{2})^2$ 來定義 wave 振幅。
+\subsection*{How to Execute}
+　　Receiver 的 source code 為 receiver.cpp，若想產生執行檔，只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make receiver
+\end{verbatim}
+　　如此便會產生 receiver 程式，其用法如下：
+\begin{verbatim}
+$ ./receiver
+Usage: ./receiver filename qamfile server_port [E0=10000]
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./receiver out.pcm qam_16_a.txt 8888|，%
+就會以 $E_0$ 與 qam\_16\_a.txt 的 modulation 方式將 wave 轉成 bits 存至 out.pcm，%
+而 $E_0$ 為預設值 $10000$。
+% }}}
+% {{{ \section{NoiseGenServer}
+\section{NoiseGenServer}
+\subsection*{Principle}
+　　NoiseGenServer 功能是讀入 sampling wave，將之加上 noise wave 後傳送出去。%
+其中 noise 為 zero-mean Gaussian random variable，所以我們先產生兩 noise $n_1, n_2$，%
+值的產生是利用 cumulative distribution function 反求值：
+\[ D(x) = \int_{-\infty}^{x}P(x')dx' = \frac{1}{2}(1+{erf}(\frac{x}{\sqrt{2}})) \]
+\[ X_i = \sqrt{2}{erf}^{-1}(2Y_i-1) \]
+　　我們可以用 Box-Muller Transformation 來逼近：
+\[ n_1 = \sqrt{-2*\ln{u}}\cos{2\pi v} \]
+\[ n_2 = \sqrt{-2*\ln{u}}\sin{2\pi v} \]
+　　其中 $u,v$ 為 uniformly distributed between 0 and 1。等求出 $n_1, n_2$ 之後，%
+我們再乘以 $d=\sqrt{\frac{N_0}{2}}$ 將範圍擴大至 $[-d, d]$。
+\subsection*{How to Execute}
+　　NoiseGenServer 的 source code 為 noiseGenServer.cpp，若想產生執行檔，只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make noiseGenServer
+\end{verbatim}
+　　如此便會產生 noiseGenServer 程式，其用法如下：
+\begin{verbatim}
+$ ./noiseGenServer
+Usage: ./noiseGenServer server_port target_ip target_port [N0=100]
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./noiseGenServer 8888 localhost 9999|，就會從 port 8888 讀入
+sampling wave，然後加上 noise wave 後傳至 localhost:9999，其中 $N_0$ 為預設值 $100$。
+% }}}
+% {{{ \section{Repeater}
+\section{Repeater}
+\subsection*{Principle}
+　　Repeater 功能是讀入 sampling wave，並將之轉成 bits 再轉成 sampling wave 傳送。%
+並且以 $E_0=(\frac{d}{2})^2$ 來定義 wave 振幅。
+\subsection*{How to Execute}
+　　Repeater 的 source code 為 repeater.cpp，若想產生執行檔，只需在目錄下鍵入以下指令：
+\begin{verbatim}
+$ make repeater
+\end{verbatim}
+　　如此便會產生 repeater 程式，其用法如下：
+\begin{verbatim}
+$ ./repeater
+Usage: ./repeater qamfile server_port target_ip target_port [E0=10000]
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./repeater qam_16_a.txt 8888 localhost 9999|，%
+，就會從 port 8888 讀入 sampling wave，然後轉成 bits 後再轉成 sampling wave
+傳至 localhost:9999，其中 $E_0$ 為預設值 $10000$。
+% }}}
+% {{{ \section{Test}
+\section{Test}
+　　為了方便測試，我用 Perl 寫了一個 script 可以自動設定好環境，其用法如下：
+\begin{verbatim}
+$ ./run.pl
+Usage: ./run.pl qamfile fromfile tofile Eb/N0 numRepeat
+\end{verbatim}
+　　舉例來講，若我們鍵入 \verb|./run.pl qam_16_a.txt 100070.pcm out.pcm 10 1|，%
+，就會從 100070.pcm 讀取資料，經過一連串的處理後存入 out.pcm，其中 modulation 是用
+qam\_16\_a.txt，$E_b/N_0=10$，然後經過一台 repeater。不過由於用了許多背景執行，%
+外加 random 產生 port，所以有時會發生問題。以下為執行情形：
+\begin{verbatim}
+$ ./run.pl qam_16_a.txt 100070.pcm out.pcm 10 0
+Create receiver from port 9102 to file out.pcm
+Create noiseGenServer from port 9103 to port 9102
+Create transmitter from file 100070.pcm to port 9103
+
+Eb = 10, N0 = 1
+Eb/N0 = 10
+compare: 100070.pcm out.pcm
+total char = 3262608, wrong rate = 247528, Pe = 0.0759
+\end{verbatim}
+　　其中我利用 countPe 程式來計算 $P_e$ 值。而由 HW1 與 HW2 的內容，我們便可模擬音訊傳輸情形，%
+先經由 transmitter encode，再經過 channel 傳輸，最後再由 receiver decode 成得到的音訊。%
+另外對於計算傳輸前後音訊的品質，我也寫了一個 countSNR 來計算 $SNR$。%
+\begin{center}
+\begin{tabular}[t]{|c|c|c|c|c|}
+\hline
+	$E_b/N_0$ & $P_e$ & $SNR$(PCM) & $SNR$(DPCM) & $SNR$(VQ) \\
+	\hline
+	1 & 0.314840765 & 0.35 & 0.1056 & 0.4146 \\
+	\hline
+	5 & 0.150319928 & 0.3413 & 0.1082 & 0.8 \\
+	\hline
+	10 & 0.075805613 & 0.7197 & 0.1008 & 1.5805 \\
+	\hline
+	20 & 0.022210759 & 2.3153 & 0.1069 & 5.314 \\
+	\hline
+	30 & 0.007048962 & 7.4458 & 0.1149 & 0.0763 \\
+	\hline
+	40 & 0.002254945 & 23.1779 & 0.1247 & 42.5298 \\
+	\hline
+	50 & 0.000746949 & 159.9228 & 0.089 & 106.2636 \\
+	\hline
+	60 & 0.000264512 & 163.9709 & 0.1019 & 188.4194 \\
+	\hline
+	70 & 9.16445E-05 & 1056.8276 & 0.1115 & 219.9949 \\
+	\hline
+	80 & 2.42138E-05 & 2055.5288 & 1.5391 & 280.0874 \\
+	\hline
+	90 & 1.07276E-05 & 5764.6814 & 0.6022 & 283.6221 \\
+	\hline
+	100 & 0.000003065 & 30759.8516 & 1.2287 & 289.8415 \\
+	\hline
+	no error & 0 & $\infty$ & 64.2322 & 294.1288 \\
+	\hline
+\end{tabular}
+\end{center}
+\begin{center}
+$E_b/N_0$ 與 $P_e$ 的關係圖：
+\includegraphics[scale=0.8]{Pe.png}
+\end{center}
+\begin{center}
+$E_b/N_0$ 與 $SNR$(PCM) 的關係圖：
+\includegraphics[scale=0.8]{snr(pcm).png}
+\end{center}
+\begin{center}
+$E_b/N_0$ 與 $SNR$(DPCM) 的關係圖：
+\includegraphics[scale=0.8]{snr(dpcm).png}
+\end{center}
+\begin{center}
+$E_b/N_0$ 與 $SNR$(VQ) 的關係圖：
+\includegraphics[scale=0.8]{snr(vq).png}
+\end{center}
+\begin{center}
+$E_b/N_0$ 與 $SNR$ 三者間的關係圖：
+\includegraphics[scale=0.8]{snr.png}
+\end{center}
+　　另外針對 repeater 的部分，我以 $E_b/N_0=10$ 加上不同數目的 repeater 下去跑。
+\begin{center}
+\begin{tabular}[t]{|c|c|}
+\hline
+	Number & $P_e$ \\
+	\hline
+	0 & 0.0754 \\
+	1 & 0.097 \\
+	2 & 0.0942 \\
+	3 & 0.0939 \\
+	4 & 0.094 \\
+	5 & 0.0942 \\
+	\hline
+\end{tabular}
+\end{center}
+\begin{center}
+Repeater 數目與 $P_e$ 的關係圖：
+\includegraphics[scale=0.8]{repeater.png}
+\end{center}
+% }}}
+% {{{ \section{Summary}
+\section{Summary}
+　　這次實驗當中可以發現 DPCM 對於傳輸錯誤的容忍力特別低，推測其原因，%
+應該是因為 DPCM 有 accumulative error 的性質，一旦傳輸時有 error 發生，便會影響到之後的結果。%
+另外 VQ 所傳送的為 index 編號，一旦發生傳輸錯誤，index 就對應到別的 VQ 了，%
+很有可能產生大幅度的偏移，但因為沒有 accumulative error 的問題，所以相較之下仍優於 DPCM。%
+　　而在 repeater 的操作上，可能因為 $P_e$ 較大，所以看不太出 $P_e=MP$ 的效果。
+% }}}
+\end{CJK} % }}}
+\end{document}

@@ -1,0 +1,143 @@
+% vim: fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{簡易MIPS Simulator說明文件}
+\author{B92902106 莊典融 \and B92902084 張凱崴 \and B92902085 謝卓叡}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+% {{{ \section*{輸入格式}
+\section*{輸入格式}
+首先輸入n，m, 代表有n個instructions, 而輸出第m次cycle時的狀態。
+後面緊跟n行，依序表示每個instruction的binary code。
+% }}}
+% {{{ \section*{實作細節}
+\section*{實作細節}
+% {{{ abstract
+首先我們用以下五個函式代表五個stage來模擬instruction的運作：
+\begin{enumerate}
+	\item fetch()：負責從instruction memory中讀取instruction。
+	\item decode()：解析instruction，並將所需register的值讀出來。
+	\item execute()：內含ALU，提供add、sub、slt、and、or等功能。
+	\item mem\_access()：提供read/write data memory的功能。
+	\item writeback()：將值寫入特定register中。
+\end{enumerate}
+幾乎每個instruction都會執行此五個stage \footnote{branch instruction除外，之後會介紹。}，%
+以方便Pipeline的實作，至於如何針對不同instructions做不同的處理，我們使用control signal的概念。%
+也就是使用一堆flag來決定此instruction該做哪些事，這也是decode stage所需要解析的。
+因此在每個stage之間分別有ifid、idex、exmem、memwb四組暫存器，%
+暫存前一個stage的結果及此instruction的contraol signal，並提供下個stage從暫存器中讀出值來執行。
+因為在實際上這五部分是同時進行的，而我們的程式受限於先天限制，所以只能以反序的方式，%
+先執行writeback(), 再執行mem\_access()，以此類推來執行各個步驟，以免覆蓋掉一些還未處理的資料。
+以下就程式一些較複雜的概念及各部分流程加以說明。
+% }}}
+% {{{ \subsection*{Hazard}
+\subsection*{Hazard}
+% {{{ content
+由於Pipeline的緣故，有時前一個instructoin要更改某個register或memory的值，%
+而下一個instruction要用到那個值，可是這些值卻還沒被更改好；%
+或者fetch stage及memory access stage同時需要read memory；%
+再者當branch發生時，無法得知下一個instruction為何，此時皆會發生Hazard，%
+我們稱第一種為Data Hazard，第二種為Struct Hazard，第三種為Control Hazard。
+針對各種hazard，我們皆可以什麼都不做，直到沒有hazard以後再繼續，此種方式稱為Stall。
+至於對於Stall的判斷，是在decode stage來做處理。
+不過由於Stall會使得處理的效率降低，所以以下我們使用了一些機制盡量避免了Stall的情形。%
+% }}}
+% {{{ \subsubsection*{Seperate Instruction Memory and Data Memory}
+\subsubsection*{Seperate Instruction Memory and Data Memory}
+因為Struct Hazard發生原因是fetch stage跟memory access stage同時read memory，%
+因此要解決這個問題，我們只要將instruction memory跟data memory分開就好了，%
+也就不會發生hazard了。
+% }}}
+% {{{ \subsubsection*{Forwarding}
+\subsubsection*{Forwarding}
+Forwarding是用來減少Data Hazard所造成的Stall，簡單來說是所需要的值還未寫回register內，%
+但如果值已經算好了, 我們便可以直接使用算好的值，而不需要等到存入後再取，此種方式稱為Forwarding。%
+因此我們只要在execute stage時多加判斷，再利用Forwarding的機制，便可達到減少Stall的目的。
+值得一提的是，當所需要的運算結果仍未算出，Forwarding無法解決Data Hazard時，%
+便需要在decode stage做stall。
+% }}}
+% }}}
+
+% {{{ \subsection*{Fetch Stage}
+\subsection*{Fetch Stage}
+fetch的機制很單純，只做兩件事：
+\begin{enumerate}
+	\item 將instruction memory中pc位址中的instruction讀進來，寫入IFID暫存器中。
+	\item 將pc位移4 bytes，並將pc值寫入IFID暫存器中。
+\end{enumerate}
+但由於可能會有Stall的發生，所以我們設了兩個control signal：ifidw、pcw。
+當ifidw為false時，我們便無法將值寫入IFID暫存器中；同理當pcw為false時，我們也無法更改pc值。\\
+另外fetch()是唯一會return value的函式，return true代表有讀到instruction或者因為Stall不需要讀；%
+而return false就代表讀不到instruction，以此來判斷程式是否結束。
+% }}}
+% {{{ \subsection*{Decode Stage}
+\subsection*{Decode Stage}
+FIXME, 交給rfr
+% }}}
+% {{{ \subsection*{Execute Stage}
+\subsection*{Execute Stage}
+execute stage主要工作是判斷出所需要的operand傳給ALU再將運算結果寫到exmem中的aluout暫存器內，%
+例如計算出r-type的運算結果傳給下個stage，或是計算lw的位置等。以下列出execute stage做的事情。%
+\begin{enumerate}
+	\item 判斷oprand\\
+		理論上operand的值已由前一個stage存入idex中，為idex.A與idex.B，然而當後面stage之後要寫入的register是現在要取出的operand，%
+		便會產生data hazard，因此以Forwarding取出存在暫存器中的運算結果aluout使用。%
+		而如果後面有超過一個stage將要存入的register都和operand要取出的register相同，將取較為前面的stage的值做Forwarding%
+		因為較前面暫存器內存的值，是較後面instruction的結果，意即是較新的結果。%
+		另外operandB會由alusrc的值來選擇是register的值或是imm，經由此步驟後決定了將傳入ALU的兩運算元。		
+	\item 模擬ALU\\
+		這個階段將利用idex中存的aluop值判斷運算子，模擬ALU的執行結果，並將其存入exmem中的aluout暫存器中。
+	\item 決定mem\_access.B以及mem\_access.rd
+		將經由forwarding處理後，register B所指定的值傳入下ㄧ個stage以供sw instruction 在mem\_access stage將值存入memory之用。%
+		並利用idex中存的RegDst判斷儲存之register rd，將其存入exmem中的rd暫存器。
+	\item 遞交下個stage的控制信號
+	將MemRead、MemWrite、RegWrite、MemtoReg等值存入exmem中對應的暫存器內，以供後面stage使用。
+\end{enumerate}
+% }}}
+% {{{ \subsection*{Memory Access Stage}
+\subsection*{Memory Access Stage}
+memory access stage主要是供lw與sw兩個instruction存取memeory，所做的事情如下：
+\begin{enumerate}
+\item 存取memory\\
+	由exmem暫存器中的MemRead以及MemWrite控制信號決定是否讀取memeory，若需要讀取，則利用aluout中的值做為位置，將exmem.b的值寫入memory，或是將讀的結果寫到memwb.mdr中。
+\item 傳遞其他控制信號\\
+	將rd、aluout、RegWrite、MemtoReg等控制信號存入memwb對應的暫存器內，以供下一個stage使用。
+\end{enumerate}
+% }}}
+% {{{ \subsection*{Write Back Stage}
+\subsection*{Write Back Stage}
+write back stage有RegWrite及MemtoReg兩個control signal，%
+前者判斷是否將值寫入register，後者判斷值的來源為讀取memory的值(mdr)或為ALU的運算結果(aluout)，%
+其操作流程如下：%
+\begin{enumerate}
+	\item 判斷RegWrite是否為true，如果為true執行步驟2，否則跳過。
+	\item 如果MemtoReg為true，為reg[rd]設為mdr；為false則設為aluout。
+\end{enumerate}
+另外writeback()還負責計算instruction number。
+% }}}
+% {{{ \subsection*{Branch function}
+\subsection*{Branch function}
+FIXME, 交給rfr
+% }}}
+\end{CJK} % }}}
+\end{document}

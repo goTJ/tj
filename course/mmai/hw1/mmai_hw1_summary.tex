@@ -1,0 +1,98 @@
+% vim:fileencodings=big5:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.5}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{bsmi}
+\title{Summary}
+\author{R96922011 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@gmail.com, 謝謝}}
+\end{CJK}
+\date{\today} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{bsmi}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+\begin{CJK}{Bg5}{bsmi}
+
+\section{Method} % {{{
+The purpose of this homework is a general shot detector,
+so I prefer to detect shots only by the variance between two adjoining frames.
+A simple, efficient, and general approach is to compare frames with color histogram,
+which has low sensitivity to camera and object movement rather pixel-pair comparison.
+Therefore, I decide to use this method to compare frames.
+
+But I think there are still some ambiguous situations for shot detection
+to use color histogram comparison.
+Roughly I classify the variance between two adjoining frames into six classes:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+& Small change & Medium change & Large change \\
+\hline
+Scene change & & Gradual transition & Sharp transition \\
+\hline
+No scene change & Object motion & Camera movement & \\
+\hline
+\end{tabular}
+\end{center}
+
+We can notice that it's hard to separate gradual transition and object motion easily.
+One way to improve it is to compare features with structure feature,
+such as edge, texture, and feature point.
+But I think most feature extractors don't maintain consistence in sequence images
+or hard to implement. So instead I use region histogram, split image into multiple regions,
+comparing variance in each region, and discarding the regions with the largest variance.
+It'll reduce the effects of camera movement, in consequence we can increase the precision.
+
+Our purpose is a general shot detector. But usually we need to set threshold.
+It's hard to find a threshold suiting for all video.
+One approach is to normalize the variance by some magic formula.
+I prefer to eliminate the threshold. I use K-means to cluster variance into 2-class,
+"scene change" and "no scene change."
+I think it's a very great approach but still has some limitations.
+As I refered above, the change has three levels, but K-means can only have fixed class number.
+If the video has no transition or has three levels change,
+2-class K-means may make some mistakes.
+I try to modify it by iterative K-means, but it didn't work well.
+
+To sum up, I use K-means to detect scene change, using color histogram comparison.
+I've tested variance in different color spaces(RGB, HSV, YIQ),
+different distance functions(L1, X2-test), w/ or w/o using regions histogram.
+The definitions of L1 and X2-test are below: ($H$ means hisogram)
+\[
+	X^2 = \sum_{bins}\frac{(H_{k+1}-H_{k})^2}{(H_(k+1)+H_{k})^2}
+\]
+\[
+	L1 = \sum_{bins}|H_{k+1}-H_{k}|
+\]
+% }}}
+
+\section{Result} % {{{
+After testing, YIQ color space with X2-test region histogram works best.
+It can detect 01, 03, and 04 great without changing threshold (Answer question D)
+and do well on 02. (Answer C: there are some several smooth gradual transitions on 02.)
+So in my program I use this method.
+% }}}
+
+\section{Reference} % {{{
+\begin{enumerate}
+\item J.S. Boreczky, L.A. Rowe, "Comparison of video shot boundary detection techniques," Proc of SPIE- Storage and Retrieval for Still Image and Video Databases IV, Vol. 2670, San Diego, 1996
+\item I. Koprinska, S. Carrato, "Temporal video segmentation: a survey," Signal Processing: Image Communication, vol. 16, pp. 477--500, 2001.
+\item B. Gunsel , M. Ferman and A. M. Tekalp “Temporal video segmentation using unsupervised clustering and semantic object tracking,” J. Electron. Imag., vol. 7, pp. 592, Jul. 1998.
+\end{enumerate}
+% }}}
+\end{CJK}
+\end{document}

@@ -1,0 +1,35 @@
+REQUIREMENT
+	* GSL (GNU Scientific Library)
+	* GIL (Generic Image Library)
+
+ASSEMBLE HDR FROM LDR IMAGES:
+
+	1. INSTALL
+		You can use Makefile:
+			make hdr
+
+	2. EXECUTE
+		./hdr [-n number_of_samples] [-w output_filename] -c config_filename
+
+		or use ./hdr to see the help file.
+
+		The config is a file which contains "FILEPATH" "SHUTTER SPEEDS" per line.
+		For example:
+
+		image1.jpg	0.1
+		image2.jpg	0.2
+		...
+		
+TONE MAPPING
+	1. INSTALL
+		You can use Makefile:
+			make tonemapping
+
+	2. EXECUTE
+		./tonemapping [Float Image] [Byte Image] [Gamma] [Amplifier]
+
+		or use ./tonmapping to see the help file.
+
+
+AUTHORS
+	Ken-Yi Lee and Tien-Jung Chuang

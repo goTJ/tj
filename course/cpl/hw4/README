@@ -1,0 +1,4 @@
+1. It can handle five types of error: four mentioned in requirement and "undeclared function".
+2. If error occurs in statements or variable declaration region,
+   the interpreter will ignore the whole line and then continue executing.
+3. Otherwise, the interpreter will stop parsing.

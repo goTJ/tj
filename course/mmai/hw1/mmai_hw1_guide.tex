@@ -1,0 +1,90 @@
+% vim:fileencodings=big5:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{bsmi}
+\title{Guide}
+\author{R96922011 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@gmail.com, 謝謝}}
+\end{CJK}
+\date{\today} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{bsmi}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+\begin{CJK}{Bg5}{bsmi}
+\begin{abstract} % {{{
+This program reads sequence of images(such as BMP, JPG, PNG, TIFF, etc.),
+and split them into different shots.
+\end{abstract} % }}}
+\section{Environment} % {{{
+This program follows ANSI C++ standard and has been tested on Windows and Linux.
+% }}}
+\section{Requirement} % {{{
+\begin{itemize}
+\item libgil2\footnote{https://www.cmlab.csie.ntu.edu.tw/trac/libgil2}
+\end{itemize}
+% }}}
+\section{Install} % {{{
+\subsection{Windows}
+I've built a Dev-C++ project. So it's very easy to compile it by Dev-C++.
+\subsection{Unix}
+Just type:
+\begin{verbatim}
+$ make
+\end{verbatim}
+% }}}
+\section{Usage} % {{{
+\begin{verbatim}
+$ Usage: ./shot_detect listfile outfile
+\end{verbatim}
+This program reads \textit{listfile} and generates \textit{outfile}.
+The listfile indicates the image filenames, one by a line, the format of listfile looks like this:
+\begin{verbatim}
+videos/JPG/01_out/s000.jpg
+videos/JPG/01_out/s001.jpg
+videos/JPG/01_out/s002.jpg
+videos/JPG/01_out/s003.jpg
+videos/JPG/01_out/s004.jpg
+videos/JPG/01_out/s005.jpg
+videos/JPG/01_out/s006.jpg
+videos/JPG/01_out/s007.jpg
+videos/JPG/01_out/s008.jpg
+videos/JPG/01_out/s009.jpg
+videos/JPG/01_out/s010.jpg
+videos/JPG/01_out/s011.jpg
+...
+\end{verbatim}
+And the program will detect shot and write the information into outfile.
+The outfile looks like listfile, but there are several separation lines,
+the format of listfile looks like this:
+\begin{verbatim}
+...
+videos/JPG/01_out/s013.jpg
+videos/JPG/01_out/s014.jpg
+videos/JPG/01_out/s015.jpg
+videos/JPG/01_out/s016.jpg
+=============================
+videos/JPG/01_out/s017.jpg
+videos/JPG/01_out/s018.jpg
+videos/JPG/01_out/s019.jpg
+videos/JPG/01_out/s020.jpg
+videos/JPG/01_out/s021.jpg
+videos/JPG/01_out/s022.jpg
+...
+\end{verbatim}
+% }}}
+\end{CJK}
+\end{document}

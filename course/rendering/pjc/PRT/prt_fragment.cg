@@ -1,0 +1,16 @@
+void prt_fragment(float3 normal    : TEXCOORD0,
+				  float3 c		   : COLOR,
+
+                  out float4 color     : COLOR,
+
+
+			  uniform float4x4 LR,
+			  uniform float4x4 LG,
+			  uniform float4x4 LB)
+{
+  float4 N = float4(normalize(normal), 1);
+  color.x = dot(N, mul(LR, N))*2.882*c.x;
+  color.y = dot(N, mul(LG, N))*2.882*c.y;
+  color.z = dot(N, mul(LB, N))*2.882*c.z;
+  color.w = 1;
+}
