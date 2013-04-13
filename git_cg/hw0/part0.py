@@ -13,12 +13,10 @@ def split_rgb(image):
   Please make sure the output shape has only 2 components!
   For instance, (600, 800) instead of (600, 800, 1)
   '''
-  red = None
-  green = None
-  blue = None
-  # Insert your code here.----------------------------------------------------
+  blue = image[:,:,0]
+  green = image[:,:,1]
+  red = image[:,:,2]
 
-  #---------------------------------------------------------------------------
   return red, green, blue
 
 def main():

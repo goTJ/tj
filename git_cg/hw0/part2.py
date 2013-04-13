@@ -13,10 +13,8 @@ def greyscale(image):
   Please make sure the output shape has only 2 components!
   For instance, (512, 512) instead of (512, 512, 1)
   '''
-  output = None
-  # Insert your code here.----------------------------------------------------
+  output = (np.sum(image, axis = 2) / 3).astype(np.uint8)
 
-  #---------------------------------------------------------------------------
   return output
 
 def main():

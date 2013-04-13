@@ -18,10 +18,12 @@ def interlace(evens, odds):
   to both in number of columns, and have 3 channels.
   '''
 
-  outimg = None
-  # Implement your function here ---------------------------------------------
-
-  #---------------------------------------------------------------------------
+  if evens.shape != odds.shape:
+    return None
+  (row, column) = evens.shape[0:2]
+  outimg = np.ndarray(shape = (row*2, column, 3), dtype = np.uint8)
+  outimg[np.arange(0, row*2, 2)] = evens
+  outimg[np.arange(1, row*2, 2)] = odds
   return outimg
 
 def main():
