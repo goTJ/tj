@@ -33,12 +33,7 @@ def convolve(image, kernel):
   output = np.ndarray(shape = (new_rows, new_cols))
   for r in range(new_rows):
     for c in range(new_cols):
-      v = np.sum(image[r : r + d, c : c + d] * reversed_kernel)
-      if v > 255:
-        v = 255
-      elif v < 0:
-        v = 0
-      output[r][c] = v
+      output[r][c] = sorted((0, 255, np.sum(image[r : r + d, c : c + d] * reversed_kernel)))[1]
   return output.astype(np.uint8)
 
 def test():
