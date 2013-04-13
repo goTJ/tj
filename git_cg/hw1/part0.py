@@ -25,11 +25,21 @@ def convolve(image, kernel):
   Output elements that result in values that are greater than 255 should be 
   cropped to 255, and output values less than 0 should be set to 0.
   '''
-  output = None
-  # Insert your code here.----------------------------------------------------
-
-  #---------------------------------------------------------------------------
-  return output 
+  (rows, cols) = image.shape
+  d = kernel.shape[0]
+  new_rows = rows - d + 1
+  new_cols = cols - d + 1
+  reversed_kernel = kernel[::-1, ::-1]
+  output = np.ndarray(shape = (new_rows, new_cols))
+  for r in range(new_rows):
+    for c in range(new_cols):
+      v = np.sum(image[r : r + d, c : c + d] * reversed_kernel)
+      if v > 255:
+        v = 255
+      elif v < 0:
+        v = 0
+      output[r][c] = v
+  return output.astype(np.uint8)
 
 def test():
   '''This script will perform a unit test on your function, and provide useful
