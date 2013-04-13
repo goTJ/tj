@@ -1,0 +1,134 @@
+% vim:fileencodings=big5:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{bsmi}
+\title{MMAI HW2 - CBIR}
+\author{R96922011 莊典融(Tien-Jung Chuang)}%\thanks{如有任何建議, 請寄至 flyhermit@gmail.com, 謝謝}}
+\end{CJK}
+\date{\today} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{bsmi}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+\begin{CJK}{Bg5}{bsmi}
+\begin{abstract} % {{{
+This program provides three query methods: color, texture, and hybrid methods.
+It uses global color histogram in HSV color space as color feature,
+gabor texture as texture feature, and L1 distance to calculate the similarity.
+In addition, this program uses leave-one-out method to train the fusing parameter
+to achieve a better result.
+\end{abstract} % }}}
+\section*{Introduction} % {{{
+\subsection*{Programs} % {{{
+\begin{itemize}
+\item gen\_fv.m: it generates features of images in \textit{list.txt}
+		and stores them into \textit{fvs.mat}.
+\item query.m: it queries images in \textit{list\_query.txt} from \textit{fvs.mat}
+		, and stores the results into \textit{result.html} in HTML format.
+\end{itemize}
+% }}}
+\subsection*{Functions} % {{{
+\begin{itemize}
+\item fv\_color.m: it reads a imagename and returns the color features of the image.
+\item fv\_texture.m: it reads a imagename and returns the texture features of the image.
+\item gaborconvolve.m: it reads a gray-level image matrix
+	and returns images convolved by gabor filter.
+\item fv\_sim.m: it reads two feature vectors and returns the distance between them.
+\item im\_query.m: it reads a imagename and returns the query results.
+\end{itemize}
+% }}}
+% }}}
+\section*{Methods} % {{{
+\subsection*{Color Feature} % {{{
+I transform the color space of image to HSV and quantify H:S:V channels to 18:3:3 parts.
+Then I calculate the whole image into one 162-bins histogram
+and normalize the histogram due to different sizes of images.\\
+
+Besides, I didn't split image into different regions because
+I think in CBIR there are different view points of scenes,
+so intuitively it won't improve the accuracy much
+but increase the dimensions of features(curse of high dimensions!!).
+Therefore, I leave the comparison of local features to the texture features.
+% }}}
+\subsection*{Texture Feature} % {{{
+I transform the image to gray-level and convole it by Gabor filter(4 scales and 6 orientations).
+Then calculate means and variances of the magnitudes of all convolutions.
+\\
+
+The reason of I choosing Gabor feature is that it's a killer-leveled texture feature.
+It bases on Fourier feature which can generally extract texture features for most images
+and provides local spatial frquency analysis to improve to disadvantage of Fourier feature.
+% }}}
+\subsection*{Similarity} % {{{
+I just simply use L1 distance to calculate the similarity for color and texture features.
+L2 is also a simple method, but I think it's easy to cause the curse of high dimensions.
+In addition, when combining two features, we have to set the weighting of two features.
+Therefore, I define a fusing parameter \textit{color\_p}($0 \leq color\_p \leq 1$),
+and the similarity of hybrid feature is:
+\[
+	color\_p*dis_{color}(fv1_{color}, fv2_{color}) + (1-color\_p)*dis_{texture}(fv1_{texture}, fv2_{texture})
+\]
+where $dis_{color}$ and $dis_{texture}$ is the distance function of color and texture,
+and $fv1_{color}$ and $fv2_{color}$ represent two color feature vectors,
+similar as $fv1_{texture}$ and $fv2_{texture}$.
+\\
+
+To find a suitable $color\_p$, I use leave-one-out method to tune the parameter.
+I query all image in the dataset except for itself,
+calculate the distance by different $color\_p$, sum the total hits among all top 9 images,
+and choose the $color\_p$ with the most total hits.
+% }}}
+% }}}
+\section*{Result} % {{{
+Please see \textit{result.html}.
+% }}}
+\section*{Discussions} % {{{
+\subsection*{Color Features} % {{{
+The color features only compares with the global color distribution.
+Therefore images with similar color will get high scores.
+Of course it's undoubted that the result contains many similar color images.
+% }}}
+\subsection*{Texture Features} % {{{
+I think there are two main factors may affect accuracy,
+one is whether the query image has a obvious pattern and
+the other is if any similar pattern image is in the dataset.
+For example, there is no specific pattern of baseball fields,
+so the result contains many different type of images.
+In the other hand, follows and foods both have similar patterns,
+same as the memorial tower and the statue of liberty.
+Therefore, the results contain those similar images.
+% }}}
+\subsection*{Hybrid Features} % {{{
+The results of hybrid features don't look good.
+There are several reasons.
+First, only color and texture features can't describe images well,
+some classes have semantic meanings or
+just refer an object in a image(the background will be noise).
+Second, the global fusing parameter may not be a good choice,
+every classes have different properties,
+some has much color meaning and some has much texture meaning.
+The recent research proposes the idea of mixed kernel
+which assigns differnt fusing parameters for each class.
+It seems able to increase the accuracy.
+Third, the way of training fusing parameters is also a key factor.
+I calculated the sum the number of top 9 hits
+because I only focused on high ranking results.
+Another way is to calculate the area of PR curves,
+it'll maximize the average accuracy.
+% }}}
+\end{CJK}
+\end{document}

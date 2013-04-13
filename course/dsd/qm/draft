@@ -1,0 +1,30 @@
+input format:
+4 10 3  // 4 var, 10 items, 3 don't care (N < 10, m+n < 2^N)
+0000    // 10 literals
+...
+1111
+1001    // 3 don't care
+1111
+1110
+
+output format:
+1--1
+00--
+10-1
+
+
+Input:
+sort ptn by num of '1'
+{ set, ptn[N] }[m+n];
+
+Merge:
+**How to merge
+**How to remove repeat(3-carry encoding)
+Set: |
+
+Covering Problem:
+generate col sets (func: genCol(Set[]))
+**find one element set (by numElement)
+**find blong-to set (by <)
+**delete one symbol (put last symbol there)
+**delete many symbol (same as before, but can't disorder)

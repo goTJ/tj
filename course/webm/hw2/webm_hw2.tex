@@ -1,0 +1,74 @@
+% vim:fileencodings=big5:ft=tex:foldmethod=marker
+%Report
+
+%The report (from 1 to 3 pages) should cover the following sections.
+
+%* Implementation for each task
+	%o The tools/code you used in developing each component
+	%o The detailed parameter settings
+%* Credits (for each member)
+
+%A few lines of comments to this assignment are also highly welcome. 
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{bsmi}
+\title{Web Mining HW2 Report}
+\author{R96922011 ²ø¨å¿Ä\thanks{²ø¨å¿Ä: r96011@csie.ntu.edu.tw}¡BR96922012 ¹ùÞ³¬P\thanks{¹ùÞ³¬P: r96012@csie.ntu.edu.tw}¡BR96922125 ¨H«ä§Ê\thanks{¨H«ä§Ê: r96125@csie.ntu.edu.tw}}
+\end{CJK}
+\date{\today} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{bsmi}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+\begin{CJK}{Bg5}{bsmi}
+To make description clear, we can divide this project into three parts:
+\begin{enumerate}
+	\item Collecting documents and extracting terms from those documents
+	\item Generating features of each document
+	\item Training model
+\end{enumerate}
+And we'll discuss eash part in each section.
+
+\section{Collections} % {{{
+It's almost dirty work here, we collected web pages from urllist given in assignment web page
+	and some crawled pages of HW1(dropped too few words pages and inaccessible pages).
+First, we converted web page into plain text by ignoring all html tags, comments, etc..
+Then we converted Chinese words to Big5 encoding and stored them as numbers.
+For English, we just extracted letter strings and separated combined word(with a '-') into two words.
+All is writen by Perl, because Perl is good at it.
+Finally we transfered web page into terms sequences.
+% }}}
+\section{Generating Features} % {{{
+We regarded a bigram of Chinese and a unigram of English as one dimension of features
+	, and we dropped the bigrams or the unigram appearing less than 3 times.
+The dimension of features is about 200,000.
+To build features of document, we considered the existence of bigram and unigram.
+If it exists in a document, we set this dimension 1. Otherwise, we set 0.
+We implemented it in C++ for high efficiency.
+% }}}
+\section{Training Model} % {{{
+We used linear svm to train model because the features suit for linear character and we could speed up our training.
+Therefore, we could afford 200,000 dimensions features.
+% }}}
+\section{Credits} % {{{
+Collections: ¹ùÞ³¬P\\
+Generating Features: ¨H«ä§Ê\\
+Training Model: ²ø¨å¿Ä\\
+Interface: ²ø¨å¿Ä
+% }}}
+\end{CJK}
+\end{document}

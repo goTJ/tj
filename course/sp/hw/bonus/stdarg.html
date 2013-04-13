@@ -1,0 +1,164 @@
+<html>
+<head><title>man stdarg</title></head>
+<body>
+所謂“variable-length argument lists”是一種機制使我們可以傳不定個參數給function，
+最常見的應該就屬大家耳熟能響的printf系列function了，至於variable-length argument lists
+的實作，在C是用standard library中stdarg.h內的幾個macros來實作，man stdarg就有詳細的解說：
+
+<pre>
+STDARG(3)                  Linux Programmer's Manual                 STDARG(3)
+
+<b>NAME</b>
+       stdarg - variable argument lists
+
+<b>SYNOPSIS</b>
+       <b>#include</b> <b>&lt;stdarg.h&gt;</b>
+
+       <b>void</b> <b>va_start(va_list</b> <u>ap</u><b>,</b> <u>last</u><b>);</b>
+       <u>type</u> <b>va_arg(va_list</b> <u>ap</u><b>,</b> <u>type</u><b>);</b>
+       <b>void</b> <b>va_end(va_list</b> <u>ap</u><b>);</b>
+       <b>void</b> <b>va_copy(va_list</b> <u>dest</u><b>,</b> <b>va_list</b> <u>src</u><b>);</b>
+
+<b>DESCRIPTION</b>
+       A  function may be called with a varying number of arguments of varying
+       types.  The include file <u>stdarg.h</u> declares a type <b>va_list</b>  and  defines
+       three  macros for stepping through a list of arguments whose number and
+       types are not known to the called function.
+
+       The called function must declare an object of  type  <b>va_list</b>  which  is
+       used by the macros <b>va_start</b>, <b>va_arg</b>, and <b>va_end</b>.
+
+   <b>va_start</b>
+       The  <b>va_start</b>  macro  initializes  <u>ap</u>  for subsequent use by <b>va_arg</b> and
+       <b>va_end</b>, and must be called first.
+
+       The parameter <u>last</u> is the name of the last parameter before  the  vari-
+       able argument list, i.e., the last parameter of which the calling func-
+       tion knows the type.
+
+       Because the address of this parameter  may  be  used  in  the  <b>va_start</b>
+       macro,  it should not be declared as a register variable, or as a func-
+       tion or an array type.
+
+   <b>va_arg</b>
+       The <b>va_arg</b> macro expands to an expression that has the type  and  value
+       of  the  next argument in the call.  The parameter <u>ap</u> is the <b>va_list</b> <u>ap</u>
+       initialized by <b>va_start</b>.  Each call to <b>va_arg</b> modifies <u>ap</u> so  that  the
+       next call returns the next argument.  The parameter <u>type</u> is a type name
+       specified so that the type of a pointer to an object that has the spec-
+       ified type can be obtained simply by adding a * to <u>type</u>.
+
+       The  first  use  of  the  <b>va_arg</b> macro after that of the <b>va_start</b> macro
+       returns the argument after <u>last</u>.   Successive  invocations  return  the
+       values of the remaining arguments.
+
+       If  there  is  no  next argument, or if <u>type</u> is not compatible with the
+       type of the actual next argument (as promoted according to the  default
+       argument promotions), random errors will occur.
+
+       If  <u>ap</u> is passed to a function that uses <b>va_arg(</b><u>ap</u><b>,</b><u>type</u><b>)</b> then the value
+       of <u>ap</u> is undefined after the return of that function.
+
+   <b>va_end</b>
+       Each invocation of <b>va_start</b> must be matched by a corresponding  invoca-
+       tion  of  <b>va_end</b>  in  the  same function. After the call <b>va_end(</b><u>ap</u><b>)</b> the
+       variable <u>ap</u> is undefined.  Multiple  transversals  of  the  list,  each
+       bracketed  by  <b>va_start</b> and <b>va_end</b> are possible.  <b>va_end</b> may be a macro
+       or a function.
+
+   <b>va_copy</b>
+       An obvious implementation would have a <b>va_list</b> a pointer to  the  stack
+       frame  of the variadic function.  In such a setup (by far the most com-
+       mon) there seems nothing against an assignment
+                   va_list aq = ap;
+       Unfortunately, there are also systems that make it an array of pointers
+       (of length 1), and there one needs
+                   va_list aq;
+                   *aq = *ap;
+       Finally, on systems where parameters are passed in registers, it may be
+       necessary for <b>va_start</b> to allocate memory, store the parameters  there,
+       and  also  an indication of which parameter is next, so that <b>va_arg</b> can
+       step through the list. Now <b>va_end</b> can free the allocated memory  again.
+       To  accommodate  this  situation, C99 adds a macro <b>va_copy</b>, so that the
+       above assignment can be replaced by
+                   va_list aq;
+                   va_copy(aq, ap);
+                   ...
+                   va_end(aq);
+       Each invocation of <b>va_copy</b> must be matched by a  corresponding  invoca-
+       tion  of  <b>va_end</b> in the same function.  Some systems that do not supply
+       <b>va_copy</b> have <b>__va_copy</b> instead, since that was the  name  used  in  the
+       draft proposal.
+
+<b>EXAMPLES</b>
+       The function <u>foo</u> takes a string of format characters and prints out the
+       argument associated with each format character based on the type.
+              #include &lt;<a href="file:/usr/include/stdio.h">stdio.h</a>&gt;
+              #include &lt;stdarg.h&gt;
+
+              void foo(char *fmt, ...) {
+                   va_list ap;
+                   int d;
+                   char c, *p, *s;
+
+                   va_start(ap, fmt);
+                   while (*fmt)
+                        switch(*fmt++) {
+                        case 's':           /* string */
+                             s = va_arg(ap, char *);
+                             printf("string %s\n", s);
+                             break;
+                        case 'd':           /* int */
+                             d = va_arg(ap, int);
+                             printf("int %d\n", d);
+                             break;
+                        case 'c':           /* char */
+                             /* need a cast here since va_arg only
+                                takes fully promoted types */
+                             c = (char) va_arg(ap, int);
+                             printf("char %c\n", c);
+                             break;
+                        }
+                   va_end(ap);
+              }
+
+<b>CONFORMING</b> <b>TO</b>
+       The <b>va_start</b>, <b>va_arg</b>, and <b>va_end</b> macros  conform  to  ANSI  X3.159-1989
+       (``C89'').  C99 defines the <b>va_copy</b> macro.
+
+<b>COMPATIBILITY</b>
+       These  macros are <u>not</u> compatible with the historic macros they replace.
+       A backward  compatible  version  can  be  found  in  the  include  file
+       <u>varargs.h</u>.
+
+<b>COMPARISON</b>
+       The historic setup is:
+              #include &lt;varargs.h&gt;
+
+              void foo(va_alist) va_dcl {
+                   va_list ap;
+
+                   va_start(ap);
+                   while(...) {
+                        ...
+                        x = va_arg(ap, type);
+                        ...
+                   }
+                   va_end(ap);
+              }
+       On  some  systems,  <u>va_end</u>  contains  a  closing  '}' matching a '{' in
+       <u>va_start</u>, so that both macros must occur in the same function, and in a
+       way that allows this.
+
+<b>BUGS</b>
+       Unlike  the <b>varargs</b> macros, the <b>stdarg</b> macros do not permit programmers
+       to code a function with no fixed  arguments.   This  problem  generates
+       work  mainly  when  converting <b>varargs</b> code to <b>stdarg</b> code, but it also
+       creates difficulties for variadic functions that wish to  pass  all  of
+       their arguments on to a function that takes a <b>va_list</b> argument, such as
+       <b><a href="file:///$LIB/w3mman2html.cgi?vfprintf(3)">vfprintf</a></b>(3).
+
+                                  2001-10-14                         <a href="file:///$LIB/w3mman2html.cgi?STDARG(3)">STDARG</a>(3)
+</pre>
+</body>
+</html>

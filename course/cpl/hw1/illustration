@@ -1,0 +1,39 @@
+Compiler HWK#1 Due date: 2:20pm, March 23, 2006
+
+1. Do ASU textbook 3.10(c) and 3.10(d) (page 149).
+
+2. Write a LEX program to do the following:
+   a. Input: an ASCII file
+   b. Output:
+      Copy the file with the following two modifications:
+      (1) replace an Arabic number with a Roman number (in upper case);
+      (2) replace a Roman number with an Arabic number.
+
+Example:
+Input:    <I don't have 51 dollars. I received MM dollars.>
+Output:   <1 don't have LI dollars. 1 received 2000 dollars.>
+
+Note: (a) "<" and ">" are not part of the input and output.
+      (b) Arabic numbers may have leading zeros, ie, 012 is legal.
+          All Arabic numbers are postivie integers < 3000.
+      (c) Roman numbers are in upper cases and are < 3000.
+      (d) English words are separated by either ",", ".", "!", "?",
+          blanks, tabs, start of lines, EOF, or newlines.
+          Note: ",", ".", "!", "?" can only be the separation on the right,
+          not on the left.
+          Example:   2000. ==> MM.
+                     .2000 ==> .2000
+          Characters can be uppercase/lower cases or mixing.
+          A word cannot be broken into two lines using "-".
+      (e) I, V, X, L, C, D, M represent 1, 5, 10, 50, 100, 500, 1000,
+          respectively, in the Roman system.
+      (f) <<EOF>> can be used to match end of file,
+          yyterminate() can be used to stop the scanner.
+      (g) To submit your homework, check out TA's web page.
+
+This homework MUST execute on FreeBSD workstations in our department.
+Submitting files include a lex file, a Makefile, and optional C codes. The
+Makefile MUST supports "make clean", "make all", and "make test" for cleaning,
+building, and testing the homework. An example of the Makefile can be obtained
+from the course web. The object code of your program must be "hwk1".
+

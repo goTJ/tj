@@ -1,0 +1,9 @@
+# category	program 	title
+# preproc: preprocessing program (title is useless)
+# preproc		face_preproces	proproc
+# init: first classifying program
+init		peopleORscene	Pong-Hu
+_1		singleORgroup	People
+_2		(none)		Scene
+_1_1		(none)		Single_Photo
+_1_2		(none)		Groups_Photo

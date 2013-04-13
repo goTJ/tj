@@ -1,0 +1,106 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ \documentclass[12pt,a4paper]{report}
+\documentclass[12pt,a4paper]{report}
+\oddsidemargin=0cm
+\topmargin=0cm
+\hoffset=0cm
+\voffset=0mm
+\marginparwidth=0cm
+\textwidth=15cm
+\pagestyle{empty}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{clrscode}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section]
+
+\begin{CJK}{Bg5}{ming}
+\title{}
+\author{莊典融(Tien-Jung Chuang)\thanks{如有任何建議, 請寄至 flyhermit@csie.org, 謝謝}}
+\date{\today}
+\end{CJK}
+% }}} \documentclass[12pt,a4paper]{report}
+
+\begin{document}
+\begin{CJK}{Bg5}{ming}
+%\maketitle
+%\tableofcontents
+\end{CJK}
+
+\begin{CJK}{Bg5}{ming}
+
+\begin{flushright}
+組語作業一\\
+資工二 b92902106 莊典融
+\end{flushright}
+
+% {{{ \subsubsection{Pseudo Code}
+\subsubsection{Pseudo Code}
+Here is a pseudo code of bubble sort:\\
+\begin{codebox}
+\Procname{$\proc{Bubble-Sort}(data)$}
+\zi \For $i \gets 1$ \To $\id{length}[data]$
+\zi 	\Do \For $j \gets 2$ \To $\id{length}][data]$
+\zi 		\Do \If $data[j-1] > data[j]$
+\zi			\Then exchange $data[j-1] \leftrightarrow data[j]$
+		\End
+	\End
+    \End
+\zi display data
+\end{codebox}
+% }}} \subsubsection{Pseudo Code}
+
+% {{{ \subsubsection{Documentation}
+\subsubsection{Documentation}
+This program implements bubble sort(showed above) by nasm.
+I use cmp+jmp to implement loop and if, and I add some comments in source code,
+I think it's easy to understand this short code.
+% }}} \subsubsection{Documentation}
+
+% {{{ \subsubsection{How to assemble}
+\subsubsection{How to assemble}
+I assembled it on Unix-like machine(linux6), using {\sf nasm} and {\sf gcc} because I called
+{\sl printf} and {\sl puts} for outputing. The following line shows how to assemble it:
+\begin{verbatim}
+	$ nasm -f elf hw1.asm           # generate object file
+	$ gcc hw1.o -o hw1              # link files and generate excutable file
+\end{verbatim}
+% }}} \subsubsection{How to assemble}
+
+% {{{ \subsubsection{How to excute}
+\subsubsection{How to excute}
+Also I excuted it on Unix-like machine(linux6), The following lines shows how to excute it:
+\begin{verbatim}
+	$ ./hw1
+\end{verbatim}
+% }}} \subsubsection{How to excute}
+
+% {{{ \subsubsection{Input format}
+\subsubsection{Input format}
+	No input needs.
+% }}} \subsubsection{Input format}
+
+% {{{ \subsubsection{Output format}
+\subsubsection{Output format}
+	Sorting result.
+% }}} \subsubsection{Output format}
+
+% {{{ \subsubsection{Bonus}
+\subsubsection{Bonus}
+Please see file {\sf hw1\_bonus.asm}. Here is brief steps to implement qsort:\\
+\begin{codebox}
+\zi \While stack is not empty
+\zi	\Do Pop stack
+\zi 	Partition data
+\zi 	Push subarray if it's not empty.
+    \End
+\zi display data
+\end{codebox}
+~\\
+The Usage is similar to hw1.asm.
+% }}} \subsubsection{Bonus}
+
+\end{CJK}
+\end{document}

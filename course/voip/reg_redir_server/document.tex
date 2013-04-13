@@ -1,0 +1,178 @@
+% vim:fileencodings=big5,latin1:ft=tex:foldmethod=marker
+% {{{ setting
+\documentclass[12pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\pagestyle{empty}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\theoremstyle{remark}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defi}{Define}[section] %}}}
+% {{{ header
+\begin{CJK}{Bg5}{ming}
+\title{VOIP HW2 Document}
+\author{b92902106 莊典融}%\thanks{如有任何建議, 請寄至 flyhermit@csie.org, 謝謝}}
+\date{\today}
+\end{CJK} % }}}
+
+\begin{document}
+% {{{ title
+\begin{CJK}{Bg5}{ming}
+\maketitle
+%\tableofcontents
+\end{CJK} % }}}
+% {{{ content
+\begin{CJK}{Bg5}{ming}
+% {{{ \begin{abstract}
+\begin{abstract}
+This is a simple location server and redirect server of SIP/UDP. Which is implemented
+by C++ programming language and unix socket programming. It can handle normal situation and
+in case of request sip address not found when redirecting(send 404 Not Found).
+\end{abstract} % }}}
+% {{{ \section{Installation}
+\section{Installation}
+\subsection{Requirement}
+The server only runs on unix-like machines, and it's well tested on linux.
+To install it, we need:
+\begin{itemize}
+\item Hardware:
+	\begin{itemize}
+		\item An unix-like machine on Internet with real IP.
+	\end{itemize}
+\item Software:
+	\begin{itemize}
+		\item tar \& gzip (For extracting files)
+		\item Berkeley socket library. (It's usually included on every unix-like machine.)
+		\item g++
+		\item make
+	\end{itemize}
+\end{itemize}
+
+\subsection{Step by Step}
+\subsubsection*{To install it}
+\begin{enumerate}
+\item \$ tar xzvf reg\_redir\_server.tgz   \# Extract files
+\item \$ cd reg\_redir\_server.tgz   \# Change directory to reg\_redir\_server
+\item \$ make   \# Compile
+\end{enumerate}
+\subsubsection*{To excute it}
+\begin{enumerate}
+\item \$ ./server
+\end{enumerate}
+It will set up server and listen UDP packets to port 5060.
+\subsubsection*{To clean it}
+\begin{enumerate}
+\item \$ make clean
+\end{enumerate}
+It will clean up all object files.
+
+\subsection{Testing}
+I only have tested server with CCL SIP UA(Ver. 1.02 Build 4) and it worked normally.
+But I can't promiss it'll perform well with all SIP UA.
+% }}}
+% {{{ \section{Design}
+\section{Design}
+\subsection{Class Intro}
+There are four classes:
+\begin{itemize}
+	\item SockIO: A class manages socket IO and transmits/receives messages on UDP.
+	\item RegData: A structure stores whole register infomation.
+	\item RegDB: A class communicates with register database. It associates with RegData.
+	\item SipReq: A class reads and judges all SIP requests, and then sends responses.
+		It depends on SockIO and is generalized by RegData.
+\end{itemize}
+% {{{ Classes
+\subsubsection{SockIO Class}
+The public methods are listed below.
+\begin{verbatim}
+class SockIO{
+public:
+        SockIO();
+        ~SockIO();
+        bool setIn(const int port);
+        bool setOut(const string &ip, const int port);
+        bool setOutByLast(); // Set out ip/port
+                             // by ip/port of last reading data
+        bool write(const string &); // Write data to out-ip/port.
+        string read(); // Read data from in-port.
+                       // If no data comes, it'll block.
+};
+\end{verbatim}
+\subsubsection{RegData Class}
+The public methods and protected data are listed below.
+\begin{verbatim}
+class RegData{
+public:
+        friend class RegDB;
+        RegData(){};
+        RegData(const RegData &r);
+        void eraseData(); // Erase whole data in the object.
+protected:
+        string _to; // The information of request address
+        string _contact; // The information of register address
+                         // mapping to request address.
+        string _expires; // The information of Expires field.
+        time_t _expireTime; // The expire time of this data.
+};
+\end{verbatim}
+\subsubsection{RegDB Class}
+The public methods are listed below.
+\begin{verbatim}
+class RegDB{
+public:
+        bool insert(RegData &); // Insert given RegData into DB.
+        bool query(RegData &); // Query RegData from DB to given
+                               // RegData reference..
+};
+\end{verbatim}
+\subsubsection{SipReq Class}
+The public methods are listed below.
+\begin{verbatim}
+class SipReq: public RegData{
+public:
+        enum Method{UNKNOWN, ACK, REGISTER, INVITE}; // Define types
+                                                     // of method.
+        SipReq(const int port); // Set up server with given port.
+        void getHeader(); // Get request header.
+                          // If no header comes, it'll block.
+        void eraseHeader(); // Erase all field of header.
+        Method getMethod(); // Return the type of method of last coming
+                            // request.
+        void send(const int code, const string &description);
+                 // Send response with given code number and description.
+};
+\end{verbatim}
+% }}}
+\subsection{Main Function}
+There are two objects in Main function: sipReq and regDB. sipReq is an object
+of SipReq class, and it sets up location/redirect server.
+Then regDB is an object of RegDB class, and it provides interface to store
+register data. The mechanism of Main function is very simple. A while loop runs
+infinitely and the sipReq waits request. When request comming, classify it by
+methods and judges it only by header information. So it's a stateless server.
+The main flow is listed below.
+\begin{verbatim}
+while(1){ // Run infinitely.
+    sipReq.getHeader();
+    switch(sipReq.getMethod()){
+        case SipReq::REGISTER:
+            regDB.insert(sipReq) ? sipReq.send(200, description[200])
+                                 : sipReq.send(404, description[404]);
+            break;
+        case SipReq::INVITE:
+            regDB.query(sipReq) ? sipReq.send(302, description[302])
+                                : sipReq.send(404, description[404]);
+            break;
+        case SipReq::ACK:
+            break;
+        default:
+    }
+    sipReq.eraseHeader();
+}
+\end{verbatim}
+% }}}
+\end{CJK} % }}}
+\end{document}

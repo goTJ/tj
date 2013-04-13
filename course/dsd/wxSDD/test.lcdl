@@ -1,0 +1,60 @@
+<TSD version="1.0">
+<head>
+<stateNo>2</stateNo>
+<transitionNo>4</transitionNo>
+<inputNo>1</inputNo>
+<outputNo>1</outputNo>
+<type>mealy</type>
+</head>
+<state>
+<id>0</id>
+<name>A</name>
+<output></output>
+</state>
+<state>
+<id>1</id>
+<name>B</name>
+<output></output>
+</state>
+<transition>
+<from>0</from>
+<to>1</to>
+<input>0</input>
+<output>0</output>
+</transition>
+<transition>
+<from>0</from>
+<to>1</to>
+<input>1</input>
+<output>1</output>
+</transition>
+<transition>
+<from>1</from>
+<to>0</to>
+<input>0</input>
+<output>1</output>
+</transition>
+<transition>
+<from>1</from>
+<to>1</to>
+<input>1</input>
+<output>0</output>
+</transition>
+Encoding: 
+0 10
+1 01
+
+01	0	10	1
+01	1	01	0
+10	0	01	0
+10	1	01	1
+
+Q0:  
+010
+Q1:  
+011
+10-
+Output0:  
+010
+101
+

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)https://nets.csie.ntu.edu.tw/~matt_ho/algorithm/hw1/ -->
+<HTML><HEAD><TITLE>2005 Homework 1</TITLE>
+<META http-equiv=Content-Language content=zh-tw>
+<META content="MSHTML 6.00.2800.1491" name=GENERATOR>
+<META content=FrontPage.Editor.Document name=ProgId>
+<META http-equiv=Content-Type content="text/html; charset=big5"></HEAD>
+<BODY background="images/back.gif">
+<P>2005/03/17<BR>Homework 1 <BR>( Strongly Connected Components ) <BR><BR>Recall 
+that a Strongly Connected Component of a directed graph G = (V,E) is a maximal 
+set of vertices C included in V such that for every pair of vertices u and v in 
+C, we have both u-&gt;v and v-&gt;u. <BR><BR>Implement the algorithm in ANSI C 
+only. (no C++)<BR>The prototype of your function is:<BR><BR>void 
+strongly_connect_component( int number_of_vertex);<BR><BR>in <A 
+href="2hw1/hw1.c">hw1.c</A>. You 
+can try to run this file first.<BR>You should complete the function and be saved 
+as "ID.cpp" in one file, i.e. if your ID is b92902001, then your file should be 
+b92922001.cpp<BR>TA will examine your code so you have to show the answers ( The 
+Strongly Connected Components of input graph)<BR><BR>The representation of 
+directed graph is &nbsp; adjacency-list (no adjacency-matrix).<BR>The graph 
+input information is in<A 
+href="2hw1/input.txt"> 
+input.txt</A> with the following 
+format:<BR><BR>input.txt<BR>-----------------<BR>5<BR>1 2<BR>1 3<BR>2 3<BR>1 
+4<BR>3 5<BR><BR>-----------------<BR>First line show the vertex numbers. In 
+other lines, first number shows the start-vertex and the second shows the 
+end-vertex<BR><BR><BR>Deadline<BR><BR>˙2005/4/8 PM17:00<BR>˙TA mailbox : 
+matt_ho@csie.ntu.edu.tw <BR><BR><BR>Note</P>
+<UL>
+  <LI>Homework information is <A 
+  href="http://nets.csie.ntu.edu.tw/~matt_ho/algorithm/hw1">http://nets.csie.ntu.edu.tw/~matt_ho/algorithm/hw1</A><BR>　 
+
+  <LI>Copying others code is prohibited and will be graded as 0 for both 
+  parties.<BR>　 
+  <LI>The objective of this homework is to learn to implement DFS, so do it 
+  yourself while not using library as its core.<BR>　 
+  <LI>If you have any question about the assignment, feel free to mail 
+  TA.<BR><BR>　 </LI></UL>
+<P><FONT color=#ff0000>注意:</FONT></P>
+<P><FONT color=#ff0000>1. 因應教授要求以程式執行的速度來評分,因此同學程式執行結果輸出有所變動.</FONT></P>
+<P><FONT color=#ff0000>原先要求輸出為個別component的vertex name, 
+現更改為輸出每一個component的數目</FONT></P>
+<P><FONT color=#ff0000>例如現有一個有向圖 G = (V,E) , 其中 strongly connected component為 
+{1,2,3} {4,5,6,7} {8}</FONT></P>
+<P><FONT color=#ff0000>則輸出結果為(3,4,1) 代表每個component裡vertex的數目</FONT></P>
+<P><FONT color=#ff0000>2. 原先函數定義請改成</FONT></P>
+<P><FONT color=#ff0000>&nbsp;&nbsp; void strongly_connect_component( int 
+number_of_vertex);</FONT></P></BODY></HTML>

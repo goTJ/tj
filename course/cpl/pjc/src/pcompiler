@@ -1,0 +1,45 @@
+#! /usr/local/bin/perl
+
+$PROGDIR = '.';
+$PROGNAME = 'pcompiler';
+$BINDIR = 'bin';
+$LIBDIR = 'lib';
+
+$filename = '';
+$toExe = 1;
+
+while($arg = shift @ARGV){
+	if($arg eq '-a'){
+                $toExe = 0;
+        }elsif($arg eq '-h'){
+                helpPage();
+                exit 0;
+	}else{
+		$filename = $arg;
+	}
+}
+
+if(!$filename){
+	helpPage();
+	exit 0;
+}
+
+$result = `$PROGDIR/$BINDIR/core_compiler $filename`;
+print $result;
+if($result =~ /Compile successfully.\n/){
+	if($toExe){
+		system("gcc -I$PROGDIR/$LIBDIR cmmcode.c -o p.out");
+		unlink('cmmcode.c');
+	}else{
+		$filename =~ /^([^.]+)/;
+		rename('cmmcode.c', $1.'.out');
+	}
+}
+
+sub helpPage
+{
+	print "Usage: $PROGNAME [options] file\n";
+	print "Options:\n";
+	print "  -a <file> : Generates a C-- code to <file>\n";
+	print "  -h        : Display this information\n";
+}

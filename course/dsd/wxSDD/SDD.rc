@@ -1,0 +1,12 @@
+#include "wx/msw/wx.rc"
+
+new BITMAP "bitmaps/new.bmp"
+open BITMAP "bitmaps/open.bmp"
+save BITMAP "bitmaps/save.bmp"
+run BITMAP "bitmaps/run.bmp"
+help BITMAP "bitmaps/help.bmp"
+selection BITMAP "bitmaps/selection.bmp"
+state BITMAP "bitmaps/state.bmp"
+transmission BITMAP "bitmaps/transmission.bmp"
+magp BITMAP "bitmaps/magp.bmp"
+magm BITMAP "bitmaps/magm.bmp"

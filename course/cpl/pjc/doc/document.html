@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" dir="ltr" lang="zh-tw"><head><title>courses:compiler [FHC Wiki]</title>
+
+
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta name="generator" content="DokuWiki Release 2005-09-22a">
+  <link rel="start" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/">
+  <link rel="contents" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:compiler&amp;do=index" title="">
+  <link rel="alternate" type="application/rss+xml" title="Recent Changes" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/feed.php">
+  <link rel="alternate" type="application/rss+xml" title="Current Namespace" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/feed.php?mode=list&amp;ns=courses">
+  <link rel="alternate" type="text/html" title="Plain HTML" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:compiler&amp;do=export_html">
+  <link rel="alternate" type="text/plain" title="Wiki Markup" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:compiler&amp;do=export_raw">
+  <link rel="stylesheet" media="screen" type="text/css" href="document_files/style.css">
+  <meta name="date" content="2006-07-04T13:46:59+0800">
+  <meta name="robots" content="noindex,nofollow">
+  <script language="javascript" type="text/javascript" charset="utf-8">
+    var alertText   = '請輸入想要格式化的文字，\n這會附加到文件的結尾。'
+    var notSavedYet = '有尚未儲存的變更將會遺失。\n真的要繼續嗎？'
+    var DOKU_BASE   = '/~b92106/wiki/'
+  </script>
+  <script language="javascript" type="text/javascript" charset="utf-8" src="document_files/script.js"></script>
+  <script language="javascript" type="text/javascript" charset="utf-8" src="document_files/tw-sack.js"></script>
+  <script language="javascript" type="text/javascript" charset="utf-8" src="document_files/ajax.js"></script>
+  <script language="javascript" type="text/javascript" charset="utf-8" src="document_files/domLib.js"></script>
+  <script language="javascript" type="text/javascript" charset="utf-8" src="document_files/domTT.js"></script>
+  <link rel="stylesheet" type="text/css" href="document_files/style_002.css">
+
+  <link rel="shortcut icon" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/lib/images/favicon.ico">
+  <link rel="stylesheet" media="screen" type="text/css" href="document_files/layout.css">
+  <link rel="stylesheet" media="screen" type="text/css" href="document_files/design.css">
+
+  
+  <link rel="stylesheet" media="print" type="text/css" href="document_files/print.css"><!--[if gte IE 5]>
+  <style type="text/css">
+    /* that IE 5+ conditional comment makes this only visible in IE 5+ */
+    /* IE bugfix for transparent PNGs */
+    //DISABLED   img { behavior: url("/~b92106/wiki/lib/scripts/pngbehavior.htc"); }
+  </style>
+  <![endif]--></head><body zhtongwen="traditional" lang="zh-tw">
+<div class="dokuwiki">
+  
+  <div class="stylehead">
+
+    <div class="header">
+      <div class="pagename">
+        [[<a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:compiler&amp;do=backlink" onclick="return svchk()" onkeypress="return svchk()">courses:compiler</a>]]
+      </div>
+      <div class="logo">
+        <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=" onclick="return svchk()" onkeypress="return svchk()" name="top" accesskey="h" title="[ALT+H]">FHC Wiki</a>      </div>
+    </div>
+  
+    
+    <div class="bar" id="bar_top">
+      <div class="bar-left" id="bar_topleft">
+        <form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="rev" value="" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="編修本頁" class="button" title="ALT+E" accesskey="e" type="submit"></form>        <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="revisions" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="舊版" class="button" title="ALT+O" accesskey="o" type="submit"></form>      </div>
+  
+      <div class="bar-right" id="bar_topright">
+        <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="recent" type="hidden"><input name="id" value="" type="hidden"><input value="最近更新" class="button" title="ALT+R" accesskey="r" type="submit"></form>        <form action="/~b92106/wiki/doku.php?id=" accept-charset="utf-8" class="search" name="search" onsubmit="return svchk()"><input name="do" value="search" type="hidden"><input id="qsearch_in" accesskey="f" name="id" class="edit" onkeyup="ajax_qsearch.call('qsearch_in','qsearch_out')" type="text"><input value="搜尋" class="button" type="submit"><div id="qsearch_out" class="ajax_qsearch" onclick="this.style.display='none'"></div></form>&nbsp;
+      </div>
+    </div>
+
+        <div class="breadcrumbs">
+      目前的足跡: <span class="bcsep">»</span> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_language" onclick="return svchk()" onkeypress="return svchk()" class="breadcrumbs" title="courses:cpl_language">cpl_language</a> <span class="bcsep">»</span> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_internal" onclick="return svchk()" onkeypress="return svchk()" class="breadcrumbs" title="courses:cpl_internal">cpl_internal</a> <span class="bcsep">»</span> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_features" onclick="return svchk()" onkeypress="return svchk()" class="breadcrumbs" title="courses:cpl_features">cpl_features</a> <span class="bcsep">»</span> <span class="curid"><a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:compiler" onclick="return svchk()" onkeypress="return svchk()" class="breadcrumbs" title="courses:compiler">compiler</a></span>          </div>
+    
+  </div>
+  
+  
+  <div class="page">
+    <!-- wikipage start -->
+    <div class="toc">
+<div class="tocheader"> <script type="text/javascript">showTocToggle("+","-")</script><div class="toctoggle"><a href="javascript:toggleToc()" class="toc"><span id="showlink" style="display: none;"><img src="document_files/arrow_down.gif" alt="+"></span><span id="hidelink"><img src="document_files/arrow_up.gif" alt="-"></span></a></div>
+本頁目錄</div>
+<div id="tocinside">
+<ul class="toc">
+<li class="level1"><span class="li"><a href="#begin" class="toc">Begin</a></span></li>
+<li class="level1"><span class="li"><a href="#project" class="toc">Project</a></span><ul class="toc">
+<li class="level2"><span class="li"><a href="#structure" class="toc">Structure</a></span></li>
+<li class="level2"><span class="li"><a href="#installation" class="toc">Installation</a></span></li>
+<li class="level2"><span class="li"><a href="#usage" class="toc">Usage</a></span></li>
+</ul>
+</li>
+<li class="level1"><span class="li"><a href="#end" class="toc">End</a></span></li>
+</ul>
+</div>
+</div>
+
+<a name="begin"></a><h1>Begin</h1>
+<div class="level1">
+
+<p>
+<a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:courses" class="wikilink1" title="courses:courses" onclick="return svchk()" onkeypress="return svchk()">回上頁</a>
+</p>
+
+<p>
+B92902106 莊典融<br>
+ TEL: 0955886443, EMAIL: b92106 [AT] csie [DOT] edu [DOT] tw
+</p>
+
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="1-126" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<a name="project"></a><h1>Project</h1>
+<div class="level1">
+
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="127-149" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<a name="structure"></a><h2>Structure</h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> .</div>
+<ul>
+<li class="level2"><div class="li"> Makefile</div>
+</li>
+<li class="level2"><div class="li"> bin/</div>
+</li>
+<li class="level2"><div class="li"> doc/</div>
+<ul>
+<li class="level3"><div class="li"> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_language" class="wikilink1" title="courses:cpl_language" onclick="return svchk()" onkeypress="return svchk()">Language</a>  # Language reference manual</div>
+</li>
+<li class="level3"><div class="li"> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_features" class="wikilink1" title="courses:cpl_features" onclick="return svchk()" onkeypress="return svchk()">Features</a>  # List of features implemented and their corresponding test programs</div>
+</li>
+<li class="level3"><div class="li"> <a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:cpl_internal" class="wikilink1" title="courses:cpl_internal" onclick="return svchk()" onkeypress="return svchk()">Internal</a>  #Implementation manual contains the implementation details.</div>
+</li>
+<li class="level3"><div class="li"> Other helpful documents: otherX.xxx</div>
+</li>
+<li class="level3"><div class="li"> Can merge everything into one document with clearly marked sections of the above. Call this file document.xxx</div>
+</li>
+</ul>
+</li>
+<li class="level2"><div class="li"> lib/</div>
+<ul>
+<li class="level3"><div class="li"> cmm.c</div>
+</li>
+</ul>
+</li>
+<li class="level2"><div class="li"> src/</div>
+<ul>
+<li class="level3"><div class="li"> Makefile</div>
+</li>
+<li class="level3"><div class="li"> emit.cpp  # all emit code are here</div>
+</li>
+<li class="level3"><div class="li"> emit.h</div>
+</li>
+<li class="level3"><div class="li"> inc.h  * configure file</div>
+</li>
+<li class="level3"><div class="li"> library.cpp  # library functions</div>
+</li>
+<li class="level3"><div class="li"> library.h</div>
+</li>
+<li class="level3"><div class="li"> OneSymbolTableByAVLTree.cpp  # One symbol table implemented by AVL tree</div>
+</li>
+<li class="level3"><div class="li"> OneSymbolTableByAVLTree.h</div>
+</li>
+<li class="level3"><div class="li"> pcompiler</div>
+</li>
+<li class="level3"><div class="li"> pparser.y  # parser</div>
+</li>
+<li class="level3"><div class="li"> pscaner.l  # scaner</div>
+</li>
+<li class="level3"><div class="li"> SymbolTable.h  # General class of symbol table</div>
+</li>
+</ul>
+</li>
+<li class="level2"><div class="li"> tests/</div>
+<ul>
+<li class="level3"><div class="li"> programX.p: program.</div>
+</li>
+<li class="level3"><div class="li"> inputX Y: input test data.</div>
+</li>
+<li class="level3"><div class="li"> outputX Y: output data.</div>
+</li>
+<li class="level3"><div class="li"> readmeX: documentation for programX, contains the purpose of having test programX.</div>
+</li>
+<li class="level3"><div class="li"> # Example: program1.p, input1 1, input1 2, output1 1, output1 2 and readme1.</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="150-1369" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<a name="installation"></a><h2>Installation</h2>
+<div class="level2">
+
+<p>
+Just unpack it and type 『make' 
+</p>
+<pre class="code shell">$ tar xzvf B92902106_proj.tar.gz
+$ make
+</pre>
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="1370-1487" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<a name="usage"></a><h2>Usage</h2>
+<div class="level2">
+<pre class="code">$ pcompiler file.p     # generates an executable object file "p.out"
+$ p.out                # execute the compiled program "p.out"
+$ pcompiler -a file.p  # generates a C– code file named 「file.out」
+</pre>
+
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="1488-1724" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<a name="end"></a><h1>End</h1>
+<div class="level1">
+
+<p>
+<a href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/doku.php?id=courses:courses" class="wikilink1" title="courses:courses" onclick="return svchk()" onkeypress="return svchk()">回上頁</a> 
+</p>
+
+</div>
+<div class="secedit"><form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="lines" value="1725-" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="改這段" class="button" type="submit"></form></div>
+<!-- cachefile /mnt/92/b92106/htdocs/wiki/data/cache/2/2e55c246c99b4169f83ba04d23770e27.xhtml used -->
+    <!-- wikipage stop -->
+  </div>
+
+  <div class="clearer">&nbsp;</div>
+
+  
+  <div class="stylefoot">
+
+    <div class="meta">
+      <div class="user">
+        登入為: flyhermit      </div>
+      <div class="doc">
+        courses/compiler.txt · 上一次變更: 2006/07/04 13:46 來自 fhc      </div>
+    </div>
+
+   
+    <div class="bar" id="bar_bottom">
+      <div class="bar-left" id="bar_bottomleft">
+        <form class="button" method="post" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="edit" type="hidden"><input name="rev" value="" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="編修本頁" class="button" title="ALT+E" accesskey="e" type="submit"></form>        <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="revisions" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="舊版" class="button" title="ALT+O" accesskey="o" type="submit"></form>      </div>
+      <div class="bar-right" id="bar_bottomright">
+                <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="admin" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="管理選單" class="button" type="submit"></form>        <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="logout" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="登出" class="button" type="submit"></form>        <form class="button" method="get" action="/~b92106/wiki/doku.php" onsubmit="return svchk()"><input name="do" value="index" type="hidden"><input name="id" value="courses:compiler" type="hidden"><input value="索引頁" class="button" title="ALT+X" accesskey="x" type="submit"></form>        <a href="#top"><input class="button" value="回到頁頂" onclick="window.scrollTo(0, 0)" type="button"></a>&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footerinc" align="center">
+  <a target="_blank" href="http://www.csie.ntu.edu.tw/%7Eb92106/wiki/feed.php" title="Recent changes RSS feed"><img src="document_files/button-rss.png" alt="Recent changes RSS feed" border="0" height="15" width="80"></a>
+
+  <a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/2.0/" rel="license" title="Creative Commons License"><img src="document_files/button-cc.gif" alt="Creative Commons License" border="0" height="15" width="80"></a>
+
+  <a target="_blank" href="https://www.paypal.com/xclick/business=andi%40splitbrain.org&amp;item_name=DokuWiki+Donation&amp;no_shipping=1&amp;no_note=1&amp;tax=0&amp;currency_code=EUR&amp;lc=US" title="Donate"><img src="document_files/button-donate.gif" alt="Donate" border="0"></a>
+
+  <a target="_blank" href="http://www.php.net/" title="Powered by PHP"><img src="document_files/button-php.gif" alt="Powered by PHP" border="0" height="15" width="80"></a>
+
+  <a target="_blank" href="http://validator.w3.org/check/referer" title="Valid XHTML 1.0"><img src="document_files/button-xhtml.png" alt="Valid XHTML 1.0" border="0" height="15" width="80"></a>
+
+  <a target="_blank" href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS"><img src="document_files/button-css.png" alt="Valid CSS" border="0" height="15" width="80"></a>
+
+  <a target="_blank" href="http://wiki.splitbrain.org/wiki:dokuwiki" title="Driven by DokuWiki"><img src="document_files/button-dw.png" alt="Driven by DokuWiki" border="0" height="15" width="80"></a>
+
+
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+   <license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/2.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/2.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+   <requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+</License>
+
+</rdf:RDF>
+
+-->
+</div>
+
+<img src="document_files/indexer.gif" alt="" height="1" width="1"></body></html>
