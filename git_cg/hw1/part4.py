@@ -48,11 +48,7 @@ def transform_xy_theta(dx, dy):
   # is zero.
   dx[dx == 0] = 0.001
 
-  theta = None
-  
-  # Insert your code here -------------------------------------------------------
-
-  #------------------------------------------------------------------------------
+  theta = np.arctan(dy/dx)
   
   return theta
 
@@ -74,11 +70,7 @@ def transform_xy_mag(dx, dy):
   Hint: you may find the np.sqrt and np.square funcitons useful here.
   '''
   
-  mag = None
-  
-  # Insert your code here -------------------------------------------------------
-
-  #------------------------------------------------------------------------------
+  mag = np.sqrt(np.square(dx) + np.square(dy))
   
   return mag
 

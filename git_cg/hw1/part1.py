@@ -26,10 +26,10 @@ def make_gaussian(k, std):
  
   Once all the points are filled, the kernel should be scaled so that the sum
   of all cells is equal to one.'''
-  kernel = None
-  # Insert your code here.----------------------------------------------------
-
-  #---------------------------------------------------------------------------
+  size = 2 * k + 1
+  gaussian_1d = signal.gaussian(size, std)
+  kernel = np.dot(gaussian_1d.reshape(size, 1), gaussian_1d.reshape(1, size))
+  kernel  = kernel / np.sum(kernel)
   return kernel
 
 def test():
