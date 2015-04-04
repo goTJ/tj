@@ -56,20 +56,30 @@ int find_peak(const vector<int>& values) {
 int main() {
   vector<int> values = { 1, 3, 5, 7, 9, 11, 11, 11 };
 
-  /*
-  for (int i = 0; i < 13; i++) {
-    printf("try %d\n", i);
-    assert(bsearch2(values, i) == (i&1 == 1 && i < 13));
+  assert(!bsearch({}, 1));
+  assert(!bsearch2({}, 1));
+  for (int v = 0; v < 13; v++) {
+    printf("try %d\n", v);
+    printf("bsearch:\n");
+    assert(bsearch(values, v) == (v&1 == 1));
+    printf("bsearch2:\n");
+    assert(bsearch2(values, v) == (v&1 == 1));
   }
-  */
   printf("find peak\n");
-  printf("%d\n", find_peak({}));
-  printf("%d\n", find_peak({11}));
-  printf("%d\n", find_peak({1, 11}));
-  printf("%d\n", find_peak({11, 1}));
-  printf("%d\n", find_peak({1, 3, 5, 7, 9, 11, 2}));
-  printf("%d\n", find_peak({1, 11, 10, 8, 6, 4, 2}));
-  printf("%d\n", find_peak({1, 3, 5, 7, 9, 11}));
-  printf("%d\n", find_peak({11, 10, 8, 6, 4, 2}));
+  assert(find_peak({}) == -1);
+  printf("find peak\n");
+  assert(find_peak({11}) == 11);
+  printf("find peak\n");
+  assert(find_peak({1, 11}) == 11);
+  printf("find peak\n");
+  assert(find_peak({11, 1}) == 11);
+  printf("find peak\n");
+  assert(find_peak({1, 3, 5, 7, 9, 11, 2}) == 11);
+  printf("find peak\n");
+  assert(find_peak({1, 11, 10, 8, 6, 4, 2}) == 11);
+  printf("find peak\n");
+  assert(find_peak({1, 3, 5, 7, 9, 11}) == 11);
+  printf("find peak\n");
+  assert(find_peak({11, 10, 8, 6, 4, 2}) == 11);
   return 0;
 }
